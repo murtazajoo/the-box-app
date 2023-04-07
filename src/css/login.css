@@ -1,0 +1,69 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap");
+
+:root {
+  --secondary: #1b2730;
+  --bg-secondary: #28343e;
+  --radius: 10px;
+  --text-primary: #707e8b;
+  --font-inter: "Inter", sans-serif;
+  --text-secondary: #ebedee;
+}
+
+.login-form {
+  min-height: 100vh;
+  display: flex;
+  justify-self: center;
+  align-items: center;
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 50px !important;
+}
+
+.login-form form {
+  border-radius: var(--radius);
+  background-color: var(--secondary);
+  color: var(--text-secondary);
+}
+.login-form form input {
+  background-color: var(--bg-secondary);
+}
+
+.back-btn {
+  top: 20px !important;
+}
+
+.signup-form {
+  min-height: 100vh;
+  display: flex;
+  justify-self: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 50px !important;
+  max-width: 400px;
+  margin: 0 auto;
+  margin-top: 80px !important;
+}
+
+.signup-form form {
+  border-radius: var(--radius);
+  background-color: var(--secondary);
+  color: var(--text-secondary);
+}
+.signup-form form input {
+  background-color: var(--bg-secondary);
+}
+
+@media (max-width: 1000px) {
+  .login-form,
+  .signup-form {
+    margin-top: 80px !important;
+    min-height: 80vh;
+    max-width: 350px;
+  }
+}
+
+.form-invalid {
+  color: rgb(252, 61, 61);
+  padding: 4px 0;
+  font-size: smaller;
+}
