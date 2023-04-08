@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaHeart, FaRetweet, FaCommentAlt } from "react-icons/fa";
 import { createClient } from "@supabase/supabase-js";
 
@@ -34,24 +34,74 @@ export default function Tweet(props) {
     }
   }
 
-  const { name, username, profile, time, text, likes, comments } = props;
+  let {
+    user_id,
+    tweetId,
+    name,
+    username,
+    profile,
+    time,
+    text,
+    likes,
+    liked_by,
+    comments,
+  } = props;
 
-  async function updateLikes(event, state) {
-    console.log(event.target.classList);
-    //   const { data, error } = await supabase
-    //     .from("posts")
-    //     .update({
-    //       likes: state
-    //         ? parseInt(event.target.id) + 1
-    //         : parseInt(event.target.id) - 1,
-    //     })
-    //     .eq("user_id", props.user.user_id);
-    //   if (data) {
-    //     return;
-    //   } else {
-    //     console.log(error);
-    //   }
+  async function getPost() {
+    let { data: posts, error } = await supabase
+      .from("posts")
+      .select("*")
+      .eq("id", tweetId);
+    name = posts[0].name;
+    username = posts[0].username;
+    profile = posts[0].profile;
+    time = posts[0].time;
+    text = posts[0].text;
+    likes = posts[0].likes;
+    liked_by = posts[0].liked_by;
+    comments = posts[0].comments;
   }
+
+  const [likesCount, setlikesCount] = useState(likes);
+  const [liked, setLiked] = useState(liked_by.includes(user_id));
+  async function updateLikes() {
+    await getPost();
+    const tweet = document.getElementById(tweetId);
+    const userId = user_id;
+    let newLikesCount = likes;
+    const likedBy = liked_by;
+    if (!liked_by.includes(userId)) {
+      newLikesCount = likes + 1;
+      setlikesCount(newLikesCount);
+      updateLikesInDatabase(tweetId, newLikesCount, userId, [
+        ...likedBy,
+        userId,
+      ]);
+      tweet.classList.add("liked");
+      setLiked(true);
+    } else {
+      newLikesCount = likes - 1;
+      likedBy.splice(likedBy.indexOf(userId), 1);
+      updateLikesInDatabase(tweetId, newLikesCount, userId, [...likedBy]);
+      tweet.classList.remove("liked");
+      setlikesCount(newLikesCount);
+      setLiked(false);
+    }
+  }
+
+  async function updateLikesInDatabase(tweetId, likesCount, userId, likedBy) {
+    const { data, error } = await supabase
+      .from("posts")
+      .update({ likes: likesCount, liked_by: likedBy })
+      .eq("id", tweetId);
+
+    if (error) {
+      console.error(error);
+    } else {
+      console.log("Likes count updated in database", data);
+    }
+  }
+
   return (
     <div className="tweet">
       <div className="tweet-user">
@@ -74,7 +124,7 @@ export default function Tweet(props) {
           <div className="tweet-footer-icon center-flex">
             <FaHeart color="red" />
             <FaRetweet color="lightblue" />{" "}
-            <small className="text-muted">{likes}</small>
+            <small className="text-muted">{likesCount}</small>
           </div>
           <div className="tweet-footer-icon center-flex">
             <small className="text-muted">{comments} Comments</small>
@@ -82,12 +132,12 @@ export default function Tweet(props) {
         </div>
         <div className="tweet-footer-icons mt-4 d-flex justify-content-around px-2">
           <div
-            id={likes}
-            className="tweet-icon center-flex "
+            id={tweetId}
+            className={`tweet-icon center-flex ${liked ? "liked" : ""}`}
             onClick={updateLikes}
           >
-            <FaHeart id={likes} color="pink" />
-            <small id={likes}>like</small>
+            <FaHeart color="pink" />
+            <small>{liked ? "liked" : "like"}</small>
           </div>
           <div className="tweet-icon center-flex">
             <FaRetweet color="lightblue" size={25} /> <small>Retweet</small>

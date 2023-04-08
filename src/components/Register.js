@@ -1,5 +1,8 @@
 import React from "react";
-import { BsArrowLeftShort } from "react-icons/bs";
+import {
+  BsArrowLeftShort,
+  BsFillExclamationTriangleFill,
+} from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 
@@ -128,7 +131,9 @@ export default function Register() {
               value={formik.values.username}
             />
             {formik.errors.username ? (
-              <div className="form-invalid">{formik.errors.username}</div>
+              <div className="form-invalid ">
+                <BsFillExclamationTriangleFill /> {formik.errors.username}
+              </div>
             ) : null}
           </div>
           <div class="mb-3">
@@ -144,7 +149,11 @@ export default function Register() {
               value={formik.values.name}
             />
             {formik.errors.name ? (
-              <div className="form-invalid">{formik.errors.name}</div>
+              <div className="form-invalid">
+                {" "}
+                <BsFillExclamationTriangleFill />
+                {formik.errors.name}
+              </div>
             ) : null}
           </div>
           <div class="mb-3">
@@ -161,7 +170,11 @@ export default function Register() {
               value={formik.values.email}
             />
             {formik.errors.email ? (
-              <div className="form-invalid">{formik.errors.email}</div>
+              <div className="form-invalid">
+                {" "}
+                <BsFillExclamationTriangleFill />
+                {formik.errors.email}
+              </div>
             ) : null}
             <div id="emailHelp" class="form-text">
               We'll never share your email with anyone else.
@@ -180,7 +193,11 @@ export default function Register() {
               value={formik.values.password}
             />
             {formik.errors.password ? (
-              <div className="form-invalid">{formik.errors.password}</div>
+              <div className="form-invalid">
+                {" "}
+                <BsFillExclamationTriangleFill />
+                {formik.errors.password}
+              </div>
             ) : null}
           </div>
 

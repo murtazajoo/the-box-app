@@ -63,7 +63,12 @@
 }
 
 .form-invalid {
-  color: rgb(252, 61, 61);
+  color: rgb(255, 123, 123);
   padding: 4px 0;
   font-size: smaller;
+  display: flex;
+  gap: 5px;
+  text-transform: lowercase;
+  justify-content: flex-start;
+  align-items: center;
 }

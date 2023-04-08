@@ -76,7 +76,10 @@ export default function Home() {
           {posts.map((post) => {
             return (
               <Tweet
+                user_id={cookie.user_id}
                 key={post.id}
+                tweetId={post.id}
+                liked_by={post.liked_by}
                 name={post.name}
                 username={post.username}
                 profile={post.profile}
