@@ -4,12 +4,10 @@ import {
   // BsFillImageFill,
   // BsFillPlayFill,
   // BsFillCalendarFill,
-  BsFillSendFill,
+  BsBoxArrowInDown,
 } from "react-icons/bs";
 import { createClient } from "@supabase/supabase-js";
 import "bootstrap";
-import Cookies from "universal-cookie";
-import { useNavigate } from "react-router-dom";
 
 export default function AddTweet(props) {
   const supabase = createClient(
@@ -26,6 +24,7 @@ export default function AddTweet(props) {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (formData.text === "") return;
     let postData = {
       ...formData,
       user_id: props.user.user_id,
@@ -48,10 +47,10 @@ export default function AddTweet(props) {
     const { data, error } = await supabase.from("posts").insert([postData]);
 
     if (error) {
+      console.error(data, error);
       setAlert({
         status: true,
         type: "error",
-
         message: "An error occured while Posting, please refresh and try again",
       });
       setTimeout(() => {
@@ -87,7 +86,7 @@ export default function AddTweet(props) {
           </div>
         )}
         <textarea
-          rows={3}
+          rows={2}
           type="text"
           onChange={handleInputChange}
           name="text"
@@ -109,10 +108,10 @@ export default function AddTweet(props) {
 
             <small>Schedule</small>
           </div>{" "} */}
-          <div className="  border-0 text-end mt-3 w-100">
-            <button type="submit" className="btn btn-primary">
-              <BsFillSendFill />
-              <span className="mx-2">Post</span>
+          <div className="  border-0 text-end mt-3 w-100 d-flex justify-content-end ">
+            <button type="submit" className="btn btn-primary d-flex ">
+              <BsBoxArrowInDown />
+              <p className="mx-1 m-0 p-0">Drop</p>
             </button>
           </div>
         </div>

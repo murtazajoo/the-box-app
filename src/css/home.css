@@ -106,7 +106,7 @@
   background-color: var(--bg-secondary) !important;
   font-size: 20px;
   color: var(--text-secondary) !important;
-  padding: 10px 15px;
+  padding: 10px 15px !important;
   outline: none;
   resize: none;
   overflow: auto;
@@ -199,7 +199,16 @@
   color: var(--text-secondary);
   width: 100%;
   margin: 0px 5px;
+  cursor: pointer;
+  text-decoration: none;
 }
 .tweet .liked {
-  background-color: rgb(251, 57, 57);
+  background-color: rgba(249, 82, 82, 0.829);
+}
+
+@media (max-width: 800px) {
+  .tweet-icon {
+    padding: 10px 2px !important;
+    font-size: smaller;
+  }
 }

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaHeart, FaRetweet, FaCommentAlt } from "react-icons/fa";
 import { createClient } from "@supabase/supabase-js";
-
+import { NavLink } from "react-router-dom";
 export default function Tweet(props) {
   const supabase = createClient(
     "https://xmeyiduceoxfvciwoajn.supabase.co",
@@ -45,6 +45,8 @@ export default function Tweet(props) {
     likes,
     liked_by,
     comments,
+    loggedIn,
+    setShowComments,
   } = props;
 
   async function getPost() {
@@ -60,6 +62,9 @@ export default function Tweet(props) {
     likes = posts[0].likes;
     liked_by = posts[0].liked_by;
     comments = posts[0].comments;
+    if (error) {
+      console.log(error, "Tweet.js on line 64");
+    }
   }
 
   const [likesCount, setlikesCount] = useState(likes);
@@ -130,22 +135,35 @@ export default function Tweet(props) {
             <small className="text-muted">{comments} Comments</small>
           </div>
         </div>
-        <div className="tweet-footer-icons mt-4 d-flex justify-content-around px-2">
-          <div
-            id={tweetId}
-            className={`tweet-icon center-flex ${liked ? "liked" : ""}`}
-            onClick={updateLikes}
-          >
-            <FaHeart color="pink" />
-            <small>{liked ? "liked" : "like"}</small>
+        {loggedIn && (
+          <div className="tweet-footer-icons mt-4 d-flex justify-content-around px-2">
+            <div
+              id={tweetId}
+              className={`tweet-icon center-flex ${liked ? "liked" : ""}`}
+              onClick={updateLikes}
+            >
+              <FaHeart color="pink" />
+              <small>{liked ? "liked" : "like"}</small>
+            </div>
+            <div className="tweet-icon center-flex">
+              <FaRetweet color="lightblue" size={25} /> <small>Retweet</small>
+            </div>
+            {/* <NavLink
+              to={`post/${tweetId}`}
+              className="tweet-icon center-flex text-light  text-center"
+            > */}
+            <div
+              className="tweet-icon center-flex text-light  text-center"
+              onClick={() => {
+                setShowComments({ status: true, id: tweetId });
+              }}
+            >
+              <FaCommentAlt color="lightblue" size={15} />{" "}
+              <small>Comment</small>
+            </div>
+            {/* </NavLink> */}
           </div>
-          <div className="tweet-icon center-flex">
-            <FaRetweet color="lightblue" size={25} /> <small>Retweet</small>
-          </div>
-          <div className="tweet-icon center-flex">
-            <FaCommentAlt color="lightblue" /> <small>Comment</small>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

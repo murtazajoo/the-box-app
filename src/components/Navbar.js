@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { FaTwitter, FaHashtag, FaBell } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaBookmark, FaHashtag, FaBell } from "react-icons/fa";
 import { BiHomeAlt } from "react-icons/bi";
 import { MdOutlineExplore } from "react-icons/md";
 import { IoMdMail } from "react-icons/io";
@@ -22,8 +22,9 @@ export default function Navbar() {
     <>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
         <div className="container-fluid">
-          <a className="navbar-brand" href="./">
-            <FaTwitter color="#1da1f2" size={40} />
+          <a className="navbar-brand center-flex" href="./">
+            <FaBookmark color="#1da1f2" size={40} />{" "}
+            <span className="logo text-muted h2">MORA</span>
           </a>
 
           <div className="" id="navbarSupportedContent">

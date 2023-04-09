@@ -1,6 +1,12 @@
 import React from "react";
 
-export default function ProfileCard() {
+export default function ProfileCard({
+  name,
+  profile,
+  username,
+  following,
+  followers,
+}) {
   return (
     <div className="profile-card home-card-mobile mb-3">
       <p className="profile-card-banner">
@@ -11,21 +17,18 @@ export default function ProfileCard() {
       </p>
 
       <p className="profile-card-picture">
-        <img
-          src="https://i.pinimg.com/originals/e8/fa/0d/e8fa0d8aaaf0949e135dee823a18c008.jpg"
-          alt=""
-        />
+        <img src={profile} alt="" />
       </p>
       <div className="profile-card-body">
-        <h3>Murtaza Joo</h3>
-        <p className="text-muted">@murtazajoo</p>
+        <h3>{name}</h3>
+        <p className="text-muted">{username}</p>
         <div className="profile-card-details">
           <div>
-            <p>2,013</p>
+            <p>{following}</p>
             <p className="text-muted">Following</p>
           </div>
           <div>
-            <p>5,013</p>
+            <p>{followers}</p>
             <p className="text-muted">Followers</p>
           </div>
         </div>

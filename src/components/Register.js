@@ -31,6 +31,10 @@ const validate = async (values) => {
     if (user.length !== 0 && user[0].username === values.username) {
       errors.username = "username not avaiable";
     }
+
+    if (error) {
+      console.error(error);
+    }
   }
   if (!values.name) {
     errors.name = "Required";
@@ -49,6 +53,9 @@ const validate = async (values) => {
       .eq("email", values.email);
     if (user.length !== 0 && user[0].email === values.email) {
       errors.email = "email not avaiable";
+    }
+    if (error) {
+      console.error(error);
     }
   }
 
@@ -95,7 +102,10 @@ export default function Register() {
         const { userdata, usererror } = await supabase
           .from("user")
           .insert([userinfo]);
-        console.log(userinfo);
+
+        if (usererror) {
+          console.log(usererror, userdata, "signup 74");
+        }
 
         const cookies = new Cookies();
         cookies.set("user_id", userinfo["user_id"], { path: "/" });
@@ -127,6 +137,7 @@ export default function Register() {
               class="form-control"
               id="username"
               name="username"
+              style={{ textTransform: "lowercase" }}
               onChange={formik.handleChange}
               value={formik.values.username}
             />
@@ -145,6 +156,7 @@ export default function Register() {
               class="form-control"
               id="name"
               name="name"
+              style={{ textTransform: "capitalize" }}
               onChange={formik.handleChange}
               value={formik.values.name}
             />

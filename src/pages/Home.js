@@ -8,6 +8,7 @@ import LoginCard from "../components/LoginCard";
 import Navbar from "../components/Navbar";
 import Cookies from "universal-cookie";
 import { createClient } from "@supabase/supabase-js";
+import Post from "../components/Post";
 
 export default function Home() {
   const supabase = createClient(
@@ -18,7 +19,8 @@ export default function Home() {
   const [posts, setPosts] = useState([]);
   const [cookie, setCookie] = useState({});
   const [loggenIn, setLoggenIn] = useState(false);
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState(null);
+  const [showComments, setShowComments] = useState({ status: false, id: 0 });
   const cookies = new Cookies();
 
   async function getPosts() {
@@ -29,6 +31,8 @@ export default function Home() {
     if (posts) {
       setPosts(posts);
       return;
+    } else {
+      console.error(error);
     }
   }
   useEffect(() => {
@@ -38,12 +42,13 @@ export default function Home() {
     });
     getPosts();
   }, []);
+
   useEffect(() => {
     if (cookie.user_id && cookie.access_token) {
       setLoggenIn(true);
     }
-    console.log(loggenIn);
   }, [cookie, loggenIn]);
+
   useEffect(() => {
     async function getUser(id) {
       let { data: user, error } = await supabase
@@ -53,9 +58,10 @@ export default function Home() {
 
       if (user) {
         setUserData(user[0]);
+        setLoggenIn(true);
         return;
       } else {
-        console.log(error, "error on line 63 Home.js");
+        setLoggenIn(false);
       }
     }
     if (loggenIn) {
@@ -63,20 +69,40 @@ export default function Home() {
     }
   }, [loggenIn]);
 
+  useEffect(() => {
+    if (showComments.status) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [showComments]);
   return (
     <>
       <Navbar />
       <main>
         <div className="profile-holder">
-          {loggenIn ? <ProfileCard /> : <LoginCard />}
+          {loggenIn && userData ? (
+            <ProfileCard
+              name={userData.name}
+              username={userData.username}
+              profile={userData.profile}
+              followers={userData.followers.length}
+              following={userData.following.length}
+            />
+          ) : (
+            <LoginCard />
+          )}
         </div>
         <div className="main-holder">
-          {loggenIn && <AddTweet user={userData} getPosts={getPosts} />}
+          {loggenIn && userData && (
+            <AddTweet user={userData} getPosts={getPosts} />
+          )}
 
           {posts.map((post) => {
             return (
               <Tweet
                 user_id={cookie.user_id}
+                loggedIn={loggenIn}
                 key={post.id}
                 tweetId={post.id}
                 liked_by={post.liked_by}
@@ -87,7 +113,8 @@ export default function Home() {
                 text={post.text}
                 // image={post.image}
                 likes={post.likes}
-                comments={post.likes - 5}
+                comments={post.comments.length}
+                setShowComments={setShowComments}
               />
             );
           })}
@@ -95,6 +122,9 @@ export default function Home() {
         <div className="trending-holder">
           <Trending />
         </div>
+        {showComments.status && (
+          <Post setShowComments={setShowComments} postID={showComments.id} />
+        )}
       </main>
     </>
   );
