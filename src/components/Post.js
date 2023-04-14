@@ -14,7 +14,7 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZXlpZHVjZW94ZnZjaXdvYWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODA1MzkzMDcsImV4cCI6MTk5NjExNTMwN30.euNOxeyYsUh6cegLmddHuVjFwU2l28IWZzPzyJ4lTRU"
 );
 
-function AddComment({ post_id, comments, getPost }) {
+function AddComment({ post_id, comments, getPost, userProfile }) {
   const [alert, setAlert] = useState({ status: false, message: "" });
   const [formData, setFormData] = useState({ text: "" });
   const cookie = new Cookies();
@@ -84,7 +84,7 @@ function AddComment({ post_id, comments, getPost }) {
             <div className="d-flex  flex-start w-100">
               <img
                 className="rounded-circle mt-3 shadow-1-strong me-3"
-                src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(21).webp"
+                src={userProfile}
                 alt="avatar"
                 width="35"
                 height="35"
@@ -183,7 +183,7 @@ function Comment({ text, user_id, created_at }) {
   );
 }
 
-export default function Post({ setShowComments, postID }) {
+export default function Post({ setShowComments, postID, userProfile }) {
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   // fetch post
@@ -219,74 +219,77 @@ export default function Post({ setShowComments, postID }) {
   }, [post]);
 
   return (
-    <div className="post-container">
-      <nav className="navbar navbar-expand-lg bg-body-tertiary">
-        <div className="container-fluid ">
-          <div className="navbar-brand center-flex">
-            <div
-              className="text-light"
-              onClick={() => {
-                setShowComments({ status: false, id: "" });
-              }}
-            >
-              <BsArrowLeft />
+    <div className="post-bg">
+      <div className="post-container">
+        <nav className="navbar navbar-expand-lg bg-body-tertiary">
+          <div className="container-fluid ">
+            <div className="navbar-brand center-flex">
+              <div
+                className="text-light back-btn"
+                onClick={() => {
+                  setShowComments({ status: false, id: "" });
+                }}
+              >
+                <BsArrowLeft />
+              </div>
+              <span className="mx-4 text-muted ">POST</span>
             </div>
-            <span className="mx-4 text-muted ">POST</span>
           </div>
-        </div>
-      </nav>
-      <div className="px-2">
-        {post && (
-          <Tweet
-            user_id={cookies.user_id}
-            loggedIn={false}
-            key={post.id}
-            tweetId={post.id}
-            liked_by={post.liked_by}
-            name={post.name}
-            username={post.username}
-            profile={post.profile}
-            time={post.created_at}
-            text={post.text}
-            // image={post.image}
-            likes={post.likes}
-            comments={post.comments.length}
-          />
-        )}
+        </nav>
+        <div className="px-2">
+          {post && (
+            <Tweet
+              user_id={cookies.user_id}
+              loggedIn={false}
+              key={post.id}
+              tweetId={post.id}
+              liked_by={post.liked_by}
+              name={post.name}
+              username={post.username}
+              profile={post.profile}
+              time={post.created_at}
+              text={post.text}
+              // image={post.image}
+              likes={post.likes}
+              comments={post.comments.length}
+            />
+          )}
 
-        <div className="conatiner ">
-          <div className="row d-flex justify-content-center ">
-            <div className="col-md-12 col-lg-12">
-              <div className="card shadow-0  comments">
-                <div className="card-body p-4">
-                  <h3 className="text-light mb-4">
-                    comments ({comments && comments.length})
-                  </h3>
+          <div className="conatiner ">
+            <div className="row d-flex justify-content-center ">
+              <div className="col-md-12 col-lg-12">
+                <div className="card shadow-0  comments">
+                  <div className="card-body p-4">
+                    <h3 className="text-light mb-4">
+                      comments ({comments && comments.length})
+                    </h3>
 
-                  <AddComment
-                    post_id={postID}
-                    comments={comments}
-                    getPost={getPost}
-                  />
+                    <AddComment
+                      post_id={postID}
+                      comments={comments}
+                      userProfile={userProfile}
+                      getPost={getPost}
+                    />
 
-                  {comments ? (
-                    comments.map((comment) => {
-                      return (
-                        <Comment
-                          key={comment.timestamp}
-                          text={comment.text}
-                          user_id={comment.user_id}
-                          created_at={comment.timestamp}
-                        />
-                      );
-                    })
-                  ) : (
-                    <>
-                      <p className="text-light">
-                        No comments yet, be the first to comment
-                      </p>
-                    </>
-                  )}
+                    {comments ? (
+                      comments.map((comment) => {
+                        return (
+                          <Comment
+                            key={comment.timestamp}
+                            text={comment.text}
+                            user_id={comment.user_id}
+                            created_at={comment.timestamp}
+                          />
+                        );
+                      })
+                    ) : (
+                      <>
+                        <p className="text-light">
+                          No comments yet, be the first to comment
+                        </p>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

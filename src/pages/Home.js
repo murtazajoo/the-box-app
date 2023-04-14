@@ -76,6 +76,23 @@ export default function Home() {
       document.body.style.overflow = "auto";
     }
   }, [showComments]);
+
+  useEffect(() => {
+    function onBackButtonEvent(e) {
+      var scroll = window.scrollY;
+      e.preventDefault();
+      setShowComments({ status: false, id: 0 });
+      window.history.pushState(null, null, window.location.pathname);
+      // props.history.push("/")
+      // window.scrollTo(0, scroll);
+    }
+    window.history.pushState(null, null, window.location.pathname);
+    window.addEventListener("popstate", onBackButtonEvent, false);
+    return () => {
+      window.removeEventListener("popstate", onBackButtonEvent);
+    };
+  }, []);
+
   return (
     <>
       <Navbar />
@@ -123,7 +140,11 @@ export default function Home() {
           <Trending />
         </div>
         {showComments.status && (
-          <Post setShowComments={setShowComments} postID={showComments.id} />
+          <Post
+            setShowComments={setShowComments}
+            userProfile={userData.profile}
+            postID={showComments.id}
+          />
         )}
       </main>
     </>

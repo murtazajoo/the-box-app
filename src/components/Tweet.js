@@ -145,8 +145,8 @@ export default function Tweet(props) {
               <FaHeart color="pink" />
               <small>{liked ? "liked" : "like"}</small>
             </div>
-            <div className="tweet-icon center-flex">
-              <FaRetweet color="lightblue" size={25} /> <small>Retweet</small>
+            <div className="tweet-icon center-flex disabled text-muted">
+              <FaRetweet color="#252525" size={25} /> <small>Retweet</small>
             </div>
             {/* <NavLink
               to={`post/${tweetId}`}
