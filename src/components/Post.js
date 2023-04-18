@@ -39,11 +39,11 @@ function AddComment({ post_id, comments, getPost, userProfile }) {
       setAlert({
         status: true,
         type: "error",
-        message: "You cannot use script  tags",
+        message: "You cannot use <script> or html  tags",
       });
       setTimeout(() => {
         setAlert({ status: false });
-      }, 2000);
+      }, 3000);
       return;
     }
 
@@ -52,26 +52,9 @@ function AddComment({ post_id, comments, getPost, userProfile }) {
       .update({ comments: [...comments, commentData] })
       .eq("id", post_id);
 
-    if (error) {
-      console.error(data, error);
-      setAlert({
-        status: true,
-        type: "error",
-        message: "An error occured while Posting, please refresh and try again",
-      });
-      setTimeout(() => {
-        setAlert({ status: false });
-      }, 2000);
-    } else {
-      setAlert({
-        status: true,
-        type: "success",
-        message: "Post Uploaded Successfully",
-      });
-      setTimeout(() => {
-        setAlert({ status: false });
-      }, 2000);
-    }
+      if(error){
+        console.error(error,data)
+      }
     setFormData({ text: "" });
     getPost();
   };
@@ -79,7 +62,7 @@ function AddComment({ post_id, comments, getPost, userProfile }) {
   return (
     <>
       <div className="container my-2 py-1 px-0 mx-0 text-dark">
-        <div className="card add-comment">
+        <div className="card add-comment border-0">
           <div className="card-body ">
             <div className="d-flex  flex-start w-100">
               <img
@@ -101,6 +84,9 @@ function AddComment({ post_id, comments, getPost, userProfile }) {
                     name="text"
                     value={formData.text}
                   ></textarea>
+{ alert.status &&
+(<small className="text-warning">cannot use script tags in comments</small>)
+}
                 </div>
                 <div className="d-flex justify-content-end mt-3">
                   <button type="submit" className="btn btn-warning">
@@ -145,25 +131,26 @@ function Comment({ text, user_id, created_at }) {
     }
   }
 
-  async function getUser() {
-    let { data: user, error } = await supabase
-      .from("user")
-      .select("*")
-      .eq("user_id", user_id);
-    if (error) {
-      return;
-    } else {
-      setUser(user[0]);
-    }
-  }
+ 
   useEffect(() => {
+    async function getUser() {
+      let { data: user, error } = await supabase
+        .from("user")
+        .select("*")
+        .eq("user_id", user_id);
+      if (error) {
+        return;
+      } else {
+        setUser(user[0]);
+      }
+    }
     getUser();
-  }, []);
+  }, [user_id]);
 
   return (
     <div className="card my-2 comment text-light">
       <div className="card-body">
-        <p>{text}</p>
+        <pre className="comment-text">{text}</pre>
 
         <div className="d-flex justify-content-between">
           {user && (
@@ -184,7 +171,7 @@ function Comment({ text, user_id, created_at }) {
 }
 
 export default function Post({ setShowComments, postID, userProfile }) {
-  const [post, setPost] = useState(null);
+  const [post, setPost] = useState(false);
   const [comments, setComments] = useState([]);
   // fetch post
 
@@ -197,7 +184,7 @@ export default function Post({ setShowComments, postID, userProfile }) {
     if (posts) {
       let thePost = posts[0];
       if (!thePost.comments || thePost.comments === []) {
-        setComments(null);
+        setComments([]);
       } else {
         thePost.comments = thePost.comments.sort(
           (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
@@ -206,17 +193,19 @@ export default function Post({ setShowComments, postID, userProfile }) {
 
       setPost(thePost);
     } else {
-      console.log(error);
+      console.error(error);
     }
   }
+
+  
   useEffect(() => {
-    getPost();
+    getPost()
   }, []);
 
   useEffect(() => {
     if (!post && comments) return;
     setComments(post.comments);
-  }, [post]);
+  }, [post,comments]);
 
   return (
     <div className="post-bg">
@@ -237,7 +226,9 @@ export default function Post({ setShowComments, postID, userProfile }) {
           </div>
         </nav>
         <div className="px-2">
-          {post && (
+         
+          {
+          post ? (
             <Tweet
               user_id={cookies.user_id}
               loggedIn={false}
@@ -253,12 +244,16 @@ export default function Post({ setShowComments, postID, userProfile }) {
               likes={post.likes}
               comments={post.comments.length}
             />
-          )}
+          ) : (
+          <p className="m-auto mt-5 text-center">
+          <div className="spinner-border text-primary " role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div></p>)}
 
           <div className="conatiner ">
             <div className="row d-flex justify-content-center ">
               <div className="col-md-12 col-lg-12">
-                <div className="card shadow-0  comments">
+                <div className="card shadow-0 border-0  comments">
                   <div className="card-body p-4">
                     <h3 className="text-light mb-4">
                       comments ({comments && comments.length})
@@ -271,7 +266,13 @@ export default function Post({ setShowComments, postID, userProfile }) {
                       getPost={getPost}
                     />
 
-                    {comments ? (
+                    {comments === [] || !comments || comments.length <= 0?(
+                      
+                        <p className="text-muted text-center text-uppercase py-5">
+                          No comments yet, be the first to comment
+                        </p>
+                      
+                    )  :(
                       comments.map((comment) => {
                         return (
                           <Comment
@@ -280,15 +281,9 @@ export default function Post({ setShowComments, postID, userProfile }) {
                             user_id={comment.user_id}
                             created_at={comment.timestamp}
                           />
-                        );
+                        )
                       })
-                    ) : (
-                      <>
-                        <p className="text-light">
-                          No comments yet, be the first to comment
-                        </p>
-                      </>
-                    )}
+                    ) }
                   </div>
                 </div>
               </div>

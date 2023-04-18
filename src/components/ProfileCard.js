@@ -21,8 +21,8 @@ export default function ProfileCard({
       </p>
       <div className="profile-card-body">
         <h3>{name}</h3>
-        <p className="text-muted">{username}</p>
-        <div className="profile-card-details">
+        <p className="text-muted">@{username}</p>
+        {/* <div className="profile-card-details">
           <div>
             <p>{following}</p>
             <p className="text-muted">Following</p>
@@ -31,7 +31,7 @@ export default function ProfileCard({
             <p>{followers}</p>
             <p className="text-muted">Followers</p>
           </div>
-        </div>
+        </div> */}
         <div className="my-4">
           <p>
             <a href="./" className="text-primary text-decoration-none">

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { FaHeart, FaRetweet, FaCommentAlt } from "react-icons/fa";
+import { FaHeart, FaRetweet, FaCommentAlt, FaBookmark } from "react-icons/fa";
 import { createClient } from "@supabase/supabase-js";
-import { NavLink } from "react-router-dom";
 export default function Tweet(props) {
   const supabase = createClient(
     "https://xmeyiduceoxfvciwoajn.supabase.co",
@@ -47,6 +46,7 @@ export default function Tweet(props) {
     comments,
     loggedIn,
     setShowComments,
+    
   } = props;
 
   async function getPost() {
@@ -76,6 +76,7 @@ export default function Tweet(props) {
     let newLikesCount = likes;
     const likedBy = liked_by;
     if (!liked_by.includes(userId)) {
+      setLiked(true);
       newLikesCount = likes + 1;
       setlikesCount(newLikesCount);
       updateLikesInDatabase(tweetId, newLikesCount, userId, [
@@ -83,14 +84,13 @@ export default function Tweet(props) {
         userId,
       ]);
       tweet.classList.add("liked");
-      setLiked(true);
     } else {
+      setLiked(false);
       newLikesCount = likes - 1;
       likedBy.splice(likedBy.indexOf(userId), 1);
       updateLikesInDatabase(tweetId, newLikesCount, userId, [...likedBy]);
       tweet.classList.remove("liked");
       setlikesCount(newLikesCount);
-      setLiked(false);
     }
   }
 
@@ -101,9 +101,7 @@ export default function Tweet(props) {
       .eq("id", tweetId);
 
     if (error) {
-      console.error(error);
-    } else {
-      console.log("Likes count updated in database", data);
+      console.error(error,data);
     }
   }
 
@@ -119,7 +117,7 @@ export default function Tweet(props) {
         </div>
       </div>
       <div className="tweet-body mt-3">
-        <p className="tweet-text">{text}</p>
+        <pre className="tweet-text">{text}</pre>
         {/* <div className="tweet-img">
           <img className="img-fluid" src={image} alt="" />
         </div> */}
@@ -127,12 +125,14 @@ export default function Tweet(props) {
       <div className="tweet-footer mt-4 ">
         <div className="tweet-footer-icons d-flex justify-content-between px-2">
           <div className="tweet-footer-icon center-flex">
-            <FaHeart color="red" />
-            <FaRetweet color="lightblue" />{" "}
+            <FaHeart color="#960018" />
+            {/* <FaRetweet color="lightblue" />{" "} */}
             <small className="text-muted">{likesCount}</small>
           </div>
           <div className="tweet-footer-icon center-flex">
-            <small className="text-muted">{comments} Comments</small>
+            <small className="text-muted"  onClick={() => {
+                setShowComments({ status: true, id: tweetId });
+              }}>{comments} Comments</small>
           </div>
         </div>
         {loggedIn && (
@@ -143,11 +143,9 @@ export default function Tweet(props) {
               onClick={updateLikes}
             >
               <FaHeart color="pink" />
-              <small>{liked ? "liked" : "like"}</small>
+              <small>{liked ? "" : ""}</small>
             </div>
-            <div className="tweet-icon center-flex disabled text-muted">
-              <FaRetweet color="#252525" size={25} /> <small>Retweet</small>
-            </div>
+            
             {/* <NavLink
               to={`post/${tweetId}`}
               className="tweet-icon center-flex text-light  text-center"
@@ -159,7 +157,10 @@ export default function Tweet(props) {
               }}
             >
               <FaCommentAlt color="lightblue" size={15} />{" "}
-              <small>Comment</small>
+              <small></small>
+            </div>
+            <div className="tweet-icon center-flex ">
+              <FaBookmark className="text-warning opacity-50" size={15} /> <small></small>
             </div>
             {/* </NavLink> */}
           </div>

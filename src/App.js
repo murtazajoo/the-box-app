@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./components/Register";
 import Post, { loader } from "./components/Post";
+import Profile from "./pages/Profile";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -18,10 +19,10 @@ const router = createBrowserRouter([
     element: <Register />,
   },
   {
-    path: "post/:postID",
-    element: <Post />,
-    loader: loader,
+    path: "profile",
+    element: <Profile />,
   },
+
 ]);
 function App() {
   return (

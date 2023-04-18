@@ -1,6 +1,8 @@
 import React from "react";
 import {
   BsArrowLeftShort,
+  BsArrowRightCircleFill,
+  BsFillBookmarkStarFill,
   BsFillExclamationTriangleFill,
 } from "react-icons/bs";
 import { Link } from "react-router-dom";
@@ -126,8 +128,8 @@ export default function Register() {
         >
           <BsArrowLeftShort /> Go Back
         </Link>
-        <form className="m-auto border p-5" onSubmit={formik.handleSubmit}>
-          <p className="text-center h3 mb-4">SignUp</p>
+        <form className="m-auto    p-5" onSubmit={formik.handleSubmit}>
+          <p className="text-center h3 mb-4">SignUp <BsFillBookmarkStarFill class="text-warning"/></p>
           <div class="mb-3">
             <label for="username" class="form-label">
               Username
@@ -214,7 +216,7 @@ export default function Register() {
           </div>
 
           <button type="submit" class="btn btn-primary ">
-            Signup
+            Signup <BsArrowRightCircleFill/>
           </button>
 
           <div className="border-bottom border-secondary my-3 w-25 m-auto"></div>

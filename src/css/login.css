@@ -20,7 +20,7 @@
 }
 
 .login-form form {
-  border-radius: var(--radius);
+  /* border-radius: var(--radius); */
   background-color: var(--secondary);
   color: var(--text-secondary);
 }
@@ -45,7 +45,6 @@
 }
 
 .signup-form form {
-  border-radius: var(--radius);
   background-color: var(--secondary);
   color: var(--text-secondary);
 }

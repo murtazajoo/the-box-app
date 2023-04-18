@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../css/login.css";
 import { Link } from "react-router-dom";
-import { BsArrowLeftShort } from "react-icons/bs";
+import { BsArrowLeftShort, BsFillArrowRightCircleFill, BsFillBookmarkPlusFill, BsFillExclamationSquareFill, BsFillExclamationTriangleFill } from "react-icons/bs";
 import { createClient } from "@supabase/supabase-js";
 import "bootstrap";
 import Cookies from "universal-cookie";
@@ -30,6 +30,10 @@ export default function Login() {
     });
     if (error) {
       setAlert(true);
+
+      setTimeout(() => {
+        setAlert(false)
+      }, 3000);
     } else {
       setAlert(false);
       const cookies = new Cookies();
@@ -46,16 +50,18 @@ export default function Login() {
       >
         <BsArrowLeftShort /> Go Back
       </Link>
-      {alert && (
+     
+      <form className="m-auto position-relative  p-5" onSubmit={handleSubmit}>
+   
+        <p className="text-center h3 mb-4">Login <BsFillBookmarkPlusFill class="text-warning"/> </p>
+        {alert && (
         <div
-          class="alert alert-danger position-absolute top-0 mt-3 start-50 translate-middle-x alert-dismissible fade show"
+          class="alert text-danger center-flex  text-center w-100 p-0 m-0 mb-2 bg-none "
           role="alert"
         >
-          Invalid Login Credentials
+         <BsFillExclamationTriangleFill/> Invalid Login Credentials
         </div>
       )}
-      <form className="m-auto border p-5" onSubmit={handleSubmit}>
-        <p className="text-center h3 mb-4">Login</p>
         <div class="mb-3">
           <label for="exampleInputEmail1" class="form-label">
             Email address
@@ -67,7 +73,9 @@ export default function Login() {
             onChange={handleInputChange}
             class="form-control"
             id="exampleInputEmail1"
+            placeholder="example@mail.com"
             aria-describedby="emailHelp"
+            required
           />
           <div id="emailHelp" class="form-text">
             {/* We'll never share your email with anyone else. */}
@@ -84,11 +92,14 @@ export default function Login() {
             type="password"
             class="form-control"
             id="exampleInputPassword1"
+            placeholder="**********"
+            required
+
           />
         </div>
 
         <button type="submit" class="btn btn-primary ">
-          Login
+          Login <BsFillArrowRightCircleFill />
         </button>
 
         <div className="border-bottom border-secondary my-3 w-25 m-auto"></div>

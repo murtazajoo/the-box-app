@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import {
   // BsFillImageFill,
   // BsFillPlayFill,
@@ -23,7 +22,9 @@ export default function AddTweet(props) {
     });
   };
   const handleSubmit = async (event) => {
+
     event.preventDefault();
+    
     if (formData.text === "") return;
     let postData = {
       ...formData,
@@ -65,9 +66,12 @@ export default function AddTweet(props) {
       setTimeout(() => {
         setAlert({ status: false });
       }, 2000);
+    props.setPosts([])
+
+      props.getPosts(true);
+      setFormData({ text: "" });
     }
-    setFormData({ text: "" });
-    props.getPosts();
+    
   };
 
   return (
@@ -109,9 +113,9 @@ export default function AddTweet(props) {
             <small>Schedule</small>
           </div>{" "} */}
           <div className="  border-0 text-end mt-3 w-100 d-flex justify-content-end ">
-            <button type="submit" className="btn btn-primary d-flex ">
-              <BsBoxArrowInDown />
+            <button type="submit" className="btn btn-info text-uppercase center-flex">
               <p className="mx-1 m-0 p-0">Drop</p>
+              <BsBoxArrowInDown />
             </button>
           </div>
         </div>
