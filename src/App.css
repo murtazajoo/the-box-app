@@ -181,9 +181,9 @@ main {
     align-items: center;
     position: relative;
     padding:15px 30px !important;
-      box-shadow: 0vw 3px 10px 1px rgba(21,134,221,0.6);
--webkit-box-shadow: 0vw 3px 10px 1px rgba(21,134,221,0.6);
--moz-box-shadow: 0vw 3px 10px 1px rgba(21,134,221,0.6);
+      box-shadow: inset 0vw 3px 30px 1px rgba(21,134,221,0.6);
+-webkit-box-shadow: inset 0vw 3px 30px 1px rgba(21,134,221,0.6);
+-moz-box-shadow: inset 0vw 3px 30px 1px rgba(21,134,221,0.6);
 
   }
   .active-nav::before{

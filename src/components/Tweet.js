@@ -35,6 +35,7 @@ export default function Tweet(props) {
 
   let {
     user_id,
+    saved,
     tweetId,
     name,
     username,
@@ -46,7 +47,6 @@ export default function Tweet(props) {
     comments,
     loggedIn,
     setShowComments,
-    
   } = props;
 
   async function getPost() {
@@ -69,9 +69,21 @@ export default function Tweet(props) {
 
   const [likesCount, setlikesCount] = useState(likes);
   const [liked, setLiked] = useState(liked_by.includes(user_id));
+
+  async function updateLikesInDatabase(tweetId, likesCount, userId, likedBy) {
+    const { data, error } = await supabase
+      .from("posts")
+      .update({ likes: likesCount, liked_by: likedBy })
+      .eq("id", tweetId);
+
+    if (error) {
+      console.error(error, data);
+    }
+  }
+
   async function updateLikes() {
     await getPost();
-    const tweet = document.getElementById(tweetId);
+    const tweet = document.getElementById("like" + tweetId);
     const userId = user_id;
     let newLikesCount = likes;
     const likedBy = liked_by;
@@ -94,14 +106,32 @@ export default function Tweet(props) {
     }
   }
 
-  async function updateLikesInDatabase(tweetId, likesCount, userId, likedBy) {
+
+
+  async function updatesaved() {
+    let { data: user } = await supabase
+      .from("user")
+      .select("*")
+      .eq("user_id", user_id);
+
+    let toSave;
+    const tweet = document.getElementById("save" + tweetId);
+
+    if (!user[0]['saved'].includes(tweetId.toString())) {
+      tweet.classList.add("saved");
+      toSave = [...user[0].saved, tweetId];
+    } else {
+      tweet.classList.remove("saved");
+      toSave = user[0].saved.filter((id) => id !== tweetId.toString());
+    }
+
     const { data, error } = await supabase
-      .from("posts")
-      .update({ likes: likesCount, liked_by: likedBy })
-      .eq("id", tweetId);
+      .from("user")
+      .update({ saved: toSave })
+      .eq("user_id", user_id);
 
     if (error) {
-      console.error(error,data);
+      console.error(error, data);
     }
   }
 
@@ -130,22 +160,29 @@ export default function Tweet(props) {
             <small className="text-muted">{likesCount}</small>
           </div>
           <div className="tweet-footer-icon center-flex">
-            <small className="text-muted"  onClick={() => {
-                setShowComments({ status: true, id: tweetId });
-              }}>{comments} Comments</small>
+            <small
+              className="text-muted"
+              onClick={() => {
+                if (loggedIn) {
+                  setShowComments({ status: true, id: tweetId });
+                }
+              }}
+            >
+              {comments} Comments
+            </small>
           </div>
         </div>
         {loggedIn && (
           <div className="tweet-footer-icons mt-4 d-flex justify-content-around px-2">
             <div
-              id={tweetId}
+              id={"like" + tweetId}
               className={`tweet-icon center-flex ${liked ? "liked" : ""}`}
               onClick={updateLikes}
             >
               <FaHeart color="pink" />
               <small>{liked ? "" : ""}</small>
             </div>
-            
+
             {/* <NavLink
               to={`post/${tweetId}`}
               className="tweet-icon center-flex text-light  text-center"
@@ -156,11 +193,17 @@ export default function Tweet(props) {
                 setShowComments({ status: true, id: tweetId });
               }}
             >
-              <FaCommentAlt color="lightblue" size={15} />{" "}
-              <small></small>
+              <FaCommentAlt color="lightblue" size={15} /> <small></small>
             </div>
-            <div className="tweet-icon center-flex ">
-              <FaBookmark className="text-warning opacity-50" size={15} /> <small></small>
+            <div
+              id={"save" + tweetId}
+              className={`tweet-icon center-flex ${saved.includes(tweetId.toString())?"saved":"" } `}
+              onClick={() => {
+                updatesaved();
+              }}
+            >
+              <FaBookmark className="text-warning opacity-50" size={15} />{" "}
+              <small></small>
             </div>
             {/* </NavLink> */}
           </div>

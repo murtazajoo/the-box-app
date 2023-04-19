@@ -171,7 +171,7 @@ body{
   border-radius: var(--radius);
   padding: 20px;
   margin: 15px auto;
-  color: rgb(160, 159, 157);
+  color: rgb(214, 214, 214);
 }
 .tweet-text{
   white-space: pre-wrap;
@@ -212,11 +212,16 @@ body{
   text-decoration: none;
   transition: 500ms;
 }
-.tweet .liked {
+.tweet .saved {
   /* background-color: rgba(249, 82, 82, 0.829); */
-  background-color: #8a2a2a;
-  box-shadow: 0px 3px 2px 1px rgba(255, 142, 142, 0.6);
+  background-color: #8a802a94;
+  box-shadow: 60px 30px 400px 1px #aa9f0098;
 
+}
+
+.tweet .liked{
+  background-color: #2a8a8abe;
+  box-shadow: -60px 30px 200px 1px #00cfb386;
 }
 
 @media (max-width: 800px) {

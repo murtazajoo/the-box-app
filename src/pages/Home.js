@@ -156,7 +156,7 @@ const [loading, setloading] = useState(true);
   return (
     <>
     {loading && <div className="loader"><div className="spinner-border  text-primary " role="status"></div> </div>}
-      <Navbar active={"home"} />
+      <Navbar active={"home"} loggedIn={loggenIn} />
       <main>
         <div className="profile-holder">
           {loggenIn && userData ? (
@@ -195,6 +195,7 @@ const [loading, setloading] = useState(true);
             return (
               <Tweet
                 user_id={cookie.user_id}
+                saved={userData.saved}
                 loggedIn={loggenIn}
                 key={post.id}
                 tweetId={post.id}

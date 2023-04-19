@@ -9,7 +9,7 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { BsFillPersonFill } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
 
-export default function Navbar({active}) {
+export default function Navbar({active,loggedIn}) {
   const [menuState, setmenuState] = useState("menu-state-mobile-off");
   function toggleMenu() {
     if (menuState === "menu-state-mobile-off") {
@@ -117,9 +117,9 @@ export default function Navbar({active}) {
                   </OverlayTrigger>
                 </li>
               </ul>
-              <p className="menu-icon" onClick={toggleMenu}>
+              {loggedIn && <p className="menu-icon" onClick={toggleMenu}>
                 <TbGridDots color="#707e8b" size={30} />
-              </p>
+              </p>}
             </div>
           </div>
         </div>
