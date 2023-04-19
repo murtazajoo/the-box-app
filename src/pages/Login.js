@@ -63,7 +63,7 @@ export default function Login() {
         </div>
       )}
         <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">
+          <label htmlFor="exampleInputEmail1" class="form-label">
             Email address
           </label>
           <input
@@ -82,7 +82,7 @@ export default function Login() {
           </div>
         </div>
         <div class="mb-3">
-          <label for="exampleInputPassword1" class="form-label">
+          <label htmlFor="exampleInputPassword1" class="form-label">
             Password
           </label>
           <input

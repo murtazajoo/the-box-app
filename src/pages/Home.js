@@ -175,7 +175,6 @@ const [loading, setloading] = useState(true);
           {loggenIn && userData && (
             <AddTweet user={userData} getPosts={getPosts} setPosts={setPosts} />
           )}
-
 <InfiniteScroll
           dataLength={posts.length}
           next={getPosts}
@@ -191,11 +190,11 @@ const [loading, setloading] = useState(true);
             </div>
           }
         >
-          {userData && posts.map((post) => {
+          {posts.map((post) => {
             return (
               <Tweet
                 user_id={cookie.user_id}
-                saved={userData.saved}
+                saved={userData ? userData.saved : []}
                 loggedIn={loggenIn}
                 key={post.id}
                 tweetId={post.id}
@@ -213,6 +212,7 @@ const [loading, setloading] = useState(true);
             );
           })}
           </InfiniteScroll>
+
         </div>
         <div className="trending-holder" onClick={()=>{
           getPosts(scrollCount)

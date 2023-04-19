@@ -76,7 +76,7 @@ export default function AddTweet(props) {
 
   return (
     <form className="add-tweet-holder" onSubmit={handleSubmit}>
-      <img src={props.user.profile} alt="" />
+      <img src={props.user.profile} alt="your-profile" width={50} height={50} />
       <div>
         {alert.status && (
           <div

@@ -138,7 +138,7 @@ export default function Tweet(props) {
   return (
     <div className="tweet">
       <div className="tweet-user">
-        <img src={profile} alt="" />
+        <img src={profile} alt="user-profile"  width={50} height={50}/>
         <div className="tweet-user-info">
           <p className="m-0">
             {name} <small className="text-muted">@{username}</small>
