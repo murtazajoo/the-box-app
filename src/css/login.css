@@ -5,7 +5,7 @@
 * Browsers: last 4 version
 */
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap");
 
 :root {
   --secondary: #1b2730;
@@ -13,8 +13,8 @@
   --radius: 10px;
   --text-primary: #707e8b;
   --font-inter: "Inter", sans-serif;
-  --text-secondary: #ebedee;
-}
+  --text-secondary: #ebedee; 
+} */
 
 .login-form {
   min-height: 100vh;
@@ -33,11 +33,12 @@
 
 .login-form form {
   /* border-radius: var(--radius); */
-  background-color: var(--secondary);
-  color: var(--text-secondary);
+  background-color: var(--primary) !important;
+  color: var(--text-primary);
 }
 .login-form form input {
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--bg-secondary) !important;
 }
 
 .back-btn {
@@ -62,11 +63,12 @@
 }
 
 .signup-form form {
-  background-color: var(--secondary);
-  color: var(--text-secondary);
+  background-color: var(--primary);
+  color: var(--text-primary);
 }
 .signup-form form input {
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--bg-secondary) !important;
 }
 
 @media (max-width: 1000px) {

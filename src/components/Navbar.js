@@ -38,7 +38,7 @@ export default function Navbar({active,loggedIn}) {
               >
                 {" "}
                 <form className=" center-flex me-auto mb-2 mb-lg-0 search-box">
-                  <FaHashtag color="#707e8b" size={20} />
+                  <FaHashtag  size={20} />
                   <input
                     autoComplete="off"
                     type="text"
@@ -70,7 +70,7 @@ export default function Navbar({active,loggedIn}) {
                     placement="bottom"
                   >
                     <NavLink className={`nav-link ${active ==="explore" && "active-nav"} `}  href="./">
-                      <MdOutlineExplore color="#707e8b" size={25} />
+                      <MdOutlineExplore  size={25} />
                       <span className="nav-icon-label">Explore</span>
                     </NavLink>
                   </OverlayTrigger>{" "}
@@ -84,7 +84,7 @@ export default function Navbar({active,loggedIn}) {
                     placement="bottom"
                   >
                     <NavLink className={`nav-link ${active ==="notification" && "active-nav"} `}  href="./">
-                      <FaBell color="#707e8b" size={25} />
+                      <FaBell  size={25} />
                       <span className="nav-icon-label">Notification</span>
                     </NavLink>
                   </OverlayTrigger>
@@ -96,7 +96,7 @@ export default function Navbar({active,loggedIn}) {
                     placement="bottom"
                   >
                     <NavLink  className={`nav-link ${active ==="messages" && "active-nav"} `}  href="./">
-                      <IoMdMail color="#707e8b" size={25} />
+                      <IoMdMail  size={25} />
                       <span className="nav-icon-label">Messages</span>
                     </NavLink>
                   </OverlayTrigger>
@@ -111,14 +111,14 @@ export default function Navbar({active,loggedIn}) {
                     placement="bottom"
                   >
                     <NavLink className={`nav-link ${active ==="profile" && "active-nav"} `} to="../profile">
-                      <BsFillPersonFill color="#707e8b" size={25} />
+                      <BsFillPersonFill  size={25} />
                       <span className="nav-icon-label">Profile</span>
                     </NavLink>
                   </OverlayTrigger>
                 </li>
               </ul>
               {loggedIn && <p className="menu-icon" onClick={toggleMenu}>
-                <TbGridDots color="#707e8b" size={30} />
+                <TbGridDots  size={30} />
               </p>}
             </div>
           </div>

@@ -8,27 +8,86 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Major+Mono+Display&display=swap");
 body {
   margin: 5px 20px !important ;
+  background-color: var(--bodg-bg) !important;
   font-family: var(--font-inter) !important;
 }
 a {
   color: var(--text-primary) !important;
 }
-:root {
-  /* --secondary: #1b2730; */
-  --secondary: #0a0f14 !important;
 
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v8.4.14,
+* Autoprefixer: v10.4.7
+* Browsers: last 4 version
+*/
+
+@media (prefers-color-scheme: dark){
+  :root {
+     --bodg-bg: #000;
+    --primary: #1b2730 !important;
+    --secondary: #0a0f14 !important;
+    --radius: 10px;
+    --text-primary: #f3f3f3;
+    --text-secondary: #ebedee;
+    --font-inter: "Inter", sans-serif;
+    --font-logo: "Major Mono Display", monospace; 
+  }
+  }
+
+@media (prefers-color-scheme: light){
+:root{
+  --bodg-bg: #e9e9e9;
+  --primary: #ffffff !important;
+  --secondary: #1b2730 !important;
   --radius: 10px;
-  --text-primary: #707e8b;
-  --text-secondary: #ebedee;
+  --text-primary: #000000 !important;
+  --text-secondary: #ffffff;
   --font-inter: "Inter", sans-serif;
   --font-logo: "Major Mono Display", monospace;
+
 }
-.logo {
-  font-family: var(--font-logo) !important;
 }
+/* 
+:root{
+  --bodg-bg: #fafafa;
+  --primary: #ffffff !important;
+  --secondary: #1b2730 !important;
+  --radius: 10px;
+  --text-primary: #141414 !important;
+  --text-secondary: #ffffff;
+  --font-inter: "Inter", sans-serif;
+  --font-logo: "Major Mono Display", monospace;
+
+}  */
+
+/* 
+:root {
+  --bodg-bg: #000;
+ --primary: #1b2730 !important;
+ --secondary: #0a0f14 !important;
+ --radius: 10px;
+ --text-primary: #f3f3f3;
+ --text-secondary: #ebedee;
+ --font-inter: "Inter", sans-serif;
+ --font-logo: "Major Mono Display", monospace; 
+} */
+
+
+.tweet-icon-inside{
+  color: var(--text-primary);
+}
+
+.tweet-icon-inside:n
+
+
 .main-nav{
   z-index: 3;
 }
+.logo {
+  font-family:"Major Mono Display", monospace!important;
+}
+
 .center-flex {
   display: -webkit-box !important;
   display: -ms-flexbox !important;
@@ -55,14 +114,14 @@ a {
   position: absolute;
   inset:0;
   z-index: 2;
-  background-color: #1b2730;
+  background-color: var(--bodg-bg);
 }
 .search-box {
   min-width: 200px;
   height: 40px;
   padding: 10px !important;
   border-radius: var(--radius);
-  background-color: var(--secondary);
+  background-color: var(--primary);color: var(--text-primary);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -81,7 +140,7 @@ input {
 }
 
 .active-nav {
-  background-color: #1b2730 !important;
+  background-color: var(--primary) !important;
   color: #fff !important;
   border-radius: var(--radius);
   padding: 8px 10px !important;
@@ -165,8 +224,8 @@ main {
         -ms-flex-pack: start !important;
             justify-content: flex-start !important;
     z-index: 4;
-    background-color:#030405;
-    /* border: 1px solid var(--text-primary); */
+    background-color:var(--bodg-bg);
+    color: var(--text-primary);
   }
   .menu li {
     /* display: flex !important; */
@@ -221,28 +280,15 @@ main {
     height: 1px;
   }
   .active-nav{
-    background-color: var(--secondary) !important;
-    color: #ffffff !important;
+    background-color: var(--primary) !important;
+    color: var(--text-primary) !important;
     letter-spacing: 2px;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: reverse;
-        -ms-flex-direction: row-reverse;
-            flex-direction: row-reverse;
-    font-weight: 500;
-    -webkit-box-pack: justify !important;
-        -ms-flex-pack: justify !important;
-            justify-content: space-between !important;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
-    position: relative;
-    padding:15px 30px !important;
-      box-shadow: inset 0vw 3px 30px 1px rgba(21,134,221,0.6);
--webkit-box-shadow: inset 0vw 3px 30px 1px rgba(21,134,221,0.6);
--moz-box-shadow: inset 0vw 3px 30px 1px rgba(21,134,221,0.6);
+    border-left:5px solid var(--secondary) ;
+    border-right:5px solid var(--secondary) ;
+
 
   }
-  .active-nav::before{
+  /* .active-nav::before{
     content: "";
     position: absolute;
     top: 0;
@@ -262,7 +308,7 @@ main {
     background-color: #1586dd;
     height: 100%;
     border-radius: 0px 10px 10px 0px;
-  }
+  } */
   .menu-icon {
     display: block;
     margin: 0 auto;

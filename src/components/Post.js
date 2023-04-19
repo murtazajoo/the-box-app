@@ -73,11 +73,11 @@ function AddComment({ post_id, comments, getPost, userProfile }) {
                 height="35"
               />
               <form className="w-100" onSubmit={handleSubmit}>
-                <small>Add a comment</small>
+                <small className="text">Add a comment</small>
 
                 <div className="form-outline">
                   <textarea
-                    className="form-control text-light bg-secondary"
+                    className="form-control input"
                     id="textAreaExample"
                     rows="1"
                     onChange={handleInputChange}
@@ -214,7 +214,7 @@ export default function Post({ setShowComments, postID, userProfile }) {
           <div className="container-fluid ">
             <div className="navbar-brand center-flex">
               <div
-                className="text-light back-btn"
+                className="text back-btn"
                 onClick={() => {
                   setShowComments({ status: false, id: "" });
                 }}
@@ -255,7 +255,7 @@ export default function Post({ setShowComments, postID, userProfile }) {
               <div className="col-md-12 col-lg-12">
                 <div className="card shadow-0 border-0  comments">
                   <div className="card-body p-4">
-                    <h3 className="text-light mb-4">
+                    <h3 className="text mb-4">
                       comments ({comments && comments.length})
                     </h3>
 

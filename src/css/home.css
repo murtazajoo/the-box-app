@@ -5,20 +5,13 @@
 * Browsers: last 4 version
 */
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap");
-
-:root {
-  --secondary: #1b2730;
-  --bg-secondary: #28343e;
-  --radius: 10px;
-  --text-primary: #707e8b;
-  --font-inter: "Inter", sans-serif;
-  --text-secondary: #ebedee;
+.add-tweet-holder::-webkit-scrollbar,
+.infinite-scroll-component__outerdiv::-webkit-scrollbar,
+.infinite-scroll-component::-webkit-scrollbar {
+  display: none;
 }
 
-body{
-  background-image: none !important;
-}
+
 
 .profile-card {
   font-family: var(--font-inter);
@@ -26,9 +19,9 @@ body{
   /* max-width: 300px; */
   overflow: hidden;
   text-align: center;
-  color: var(--text-secondary);
+  color: var(--text-primary);
   border-radius: var(--radius);
-  background-color: var(--secondary);
+  background-color: var(--primary);
 }
 @media (max-width: 1000px) {
   .home-card-mobile {
@@ -40,6 +33,7 @@ body{
   max-height: 200px;
 }
 
+
 .profile-card-picture {
   width: 100px !important;
   height: 100px;
@@ -47,7 +41,7 @@ body{
   overflow: hidden;
   margin: 0 auto;
   margin-top: -50px;
-  border: 5px solid var(--secondary);
+  border: 5px solid var(--primary);
   background-color: #fff;
 }
 .profile-card img {
@@ -85,8 +79,8 @@ body{
 
 .trending-section {
   border-radius: var(--radius);
-  background-color: var(--secondary);
-  color: var(--text-secondary);
+  background-color: var(--primary);
+  color: var(--text-primary);
   padding: 20px 30px;
   gap: 10px;
 }
@@ -106,8 +100,8 @@ body{
 
 .add-tweet-holder {
   border-radius: var(--radius);
-  background-color: var(--secondary);
-  color: var(--text-secondary);
+  background-color: var(--primary);
+  color: var(--text-primary);
   padding: 20px 30px;
   gap: 10px;
   display: -webkit-box;
@@ -127,9 +121,9 @@ body{
 .add-tweet-holder div textarea {
   width: 100% !important;
   border-radius: var(--radius);
-  background-color: var(--bg-secondary) !important;
+  background-color: var(--bg-primary) !important;
   font-size: 20px;
-  color: var(--text-secondary) !important;
+  color: var(--text-primary) !important;
   padding: 10px 15px !important;
   outline: none;
   resize: none;
@@ -217,11 +211,11 @@ body{
 .tweet {
   width: 100%;
   overflow: hidden;
-  background-color: #0a0f14;
+  background-color: var(--primary);
+  color: var(--text-primary);
   border-radius: var(--radius);
   padding: 20px;
   margin: 15px auto;
-  color: rgb(214, 214, 214);
 }
 .tweet-text{
   white-space: pre-wrap;
@@ -258,7 +252,7 @@ body{
 }
 
 .tweet-icon {
-  /* border: 1px solid var(--text-primary); */
+  border: 1px solid var(--text-primary);
   background-color: var(--bg-secondary);
   padding: 10px !important;
   border-radius: var(--radius);
@@ -269,20 +263,20 @@ body{
   text-decoration: none;
   -webkit-transition: 500ms;
   -o-transition: 500ms;
-  transition: 500ms;
+  transition: 200ms;
 }
 .tweet .saved {
   /* background-color: rgba(249, 82, 82, 0.829); */
-  background-color: #8a802a94;
-  -webkit-box-shadow: 60px 30px 400px 1px #aa9f0098;
-          box-shadow: 60px 30px 400px 1px #aa9f0098;
+  background-color: #ffef62;
+  -webkit-box-shadow: 60px 30px 400px 1px #ffef628a;
+          box-shadow: 60px 30px 400px 1px #ffef628c;
 
 }
 
 .tweet .liked{
-  background-color: #2a8a8abe;
-  -webkit-box-shadow: -60px 30px 200px 1px #00cfb386;
-          box-shadow: -60px 30px 200px 1px #00cfb386;
+  background-color: #ff6161;
+  -webkit-box-shadow: -60px 30px 200px 1px #ff616177;
+          box-shadow: -60px 30px 200px 1px #ff61618a;
 }
 
 @media (max-width: 800px) {

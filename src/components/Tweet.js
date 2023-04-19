@@ -179,7 +179,7 @@ export default function Tweet(props) {
               className={`tweet-icon center-flex ${liked ? "liked" : ""}`}
               onClick={updateLikes}
             >
-              <FaHeart color="pink" />
+              <FaHeart className="tweet-icon-inside"/>
               <small>{liked ? "" : ""}</small>
             </div>
 
@@ -193,16 +193,16 @@ export default function Tweet(props) {
                 setShowComments({ status: true, id: tweetId });
               }}
             >
-              <FaCommentAlt color="lightblue" size={15} /> <small></small>
+              <FaCommentAlt className="tweet-icon-inside" size={15} /> <small></small>
             </div>
             <div
               id={"save" + tweetId}
-              className={`tweet-icon center-flex ${saved.includes(tweetId.toString())?"saved":"" } `}
+              className={`tweet-icon  center-flex ${saved.includes(tweetId.toString())?"saved":"" } `}
               onClick={() => {
                 updatesaved();
               }}
             >
-              <FaBookmark className="text-warning opacity-50" size={15} />{" "}
+              <FaBookmark className="tweet-icon-inside" size={15} />{" "}
               <small></small>
             </div>
             {/* </NavLink> */}
