@@ -1,3 +1,10 @@
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v8.4.14,
+* Autoprefixer: v10.4.7
+* Browsers: last 4 version
+*/
+
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap");
 
 :root {
@@ -49,10 +56,15 @@ body{
 }
 
 .profile-card-details {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   position: relative;
-  justify-content: space-around;
-  align-items: center;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   border-top: 1px solid var(--text-primary);
   border-bottom: 1px solid var(--text-primary);
 
@@ -79,9 +91,15 @@ body{
   gap: 10px;
 }
 .trend {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 /*   PATH ../components/AddTweet.js  */
@@ -92,6 +110,8 @@ body{
   color: var(--text-secondary);
   padding: 20px 30px;
   gap: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   width: 100%;
 }
@@ -116,6 +136,22 @@ body{
   overflow: auto;
 }
 
+.add-tweet-holder div textarea::-webkit-input-placeholder {
+  color: #bbbbbb;
+}
+
+.add-tweet-holder div textarea::-moz-placeholder {
+  color: #bbbbbb;
+}
+
+.add-tweet-holder div textarea:-ms-input-placeholder {
+  color: #bbbbbb;
+}
+
+.add-tweet-holder div textarea::-ms-input-placeholder {
+  color: #bbbbbb;
+}
+
 .add-tweet-holder div textarea::placeholder {
   color: #bbbbbb;
 }
@@ -126,15 +162,27 @@ body{
 }
 
 .add-tweet-icons {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 .add-tweet-icon {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   border-radius: var(--radius);
   color: var(--text-secondary);
   font-size: 16px;
@@ -152,8 +200,10 @@ body{
   }
   .add-tweet-icons {
     margin-top: 5px;
-    justify-content: space-around;
-    flex-wrap: wrap;
+    -ms-flex-pack: distribute;
+        justify-content: space-around;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
   }
   .add-tweet-icon {
     margin: 5px;
@@ -180,9 +230,15 @@ body{
    font-size: 16px;
 }
 .tweet-user {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   gap: 10px;
 }
 
@@ -210,18 +266,22 @@ body{
   margin: 0px 5px;
   cursor: pointer;
   text-decoration: none;
+  -webkit-transition: 500ms;
+  -o-transition: 500ms;
   transition: 500ms;
 }
 .tweet .saved {
   /* background-color: rgba(249, 82, 82, 0.829); */
   background-color: #8a802a94;
-  box-shadow: 60px 30px 400px 1px #aa9f0098;
+  -webkit-box-shadow: 60px 30px 400px 1px #aa9f0098;
+          box-shadow: 60px 30px 400px 1px #aa9f0098;
 
 }
 
 .tweet .liked{
   background-color: #2a8a8abe;
-  box-shadow: -60px 30px 200px 1px #00cfb386;
+  -webkit-box-shadow: -60px 30px 200px 1px #00cfb386;
+          box-shadow: -60px 30px 200px 1px #00cfb386;
 }
 
 @media (max-width: 800px) {

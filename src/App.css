@@ -1,3 +1,10 @@
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v8.4.14,
+* Autoprefixer: v10.4.7
+* Browsers: last 4 version
+*/
+
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Major+Mono+Display&display=swap");
 body {
   margin: 5px 20px !important ;
@@ -23,16 +30,28 @@ a {
   z-index: 3;
 }
 .center-flex {
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
   display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
+  -webkit-box-pack: center !important;
+      -ms-flex-pack: center !important;
+          justify-content: center !important;
+  -webkit-box-align: center !important;
+      -ms-flex-align: center !important;
+          align-items: center !important;
   min-width: 10px;
   gap: 5px;
 }
 .loader{
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   position: absolute;
   inset:0;
   z-index: 2;
@@ -44,9 +63,15 @@ a {
   padding: 10px !important;
   border-radius: var(--radius);
   background-color: var(--secondary);
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 input {
   border: none !important;
@@ -85,7 +110,9 @@ main > div {
 }
 
 main {
+  display: -ms-grid;
   display: grid;
+  -ms-grid-columns: 1.5fr 20px minmax(auto, 550px) 20px 1.7fr;
   grid-template-columns: 1.5fr minmax(auto, 550px) 1.7fr;
   grid-auto-rows: auto !important;
   grid-gap: 20px;
@@ -122,39 +149,61 @@ main {
     margin: 15px auto !important;
   }
   .menu {
-    flex-direction: column !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-box-direction: normal !important;
+        -ms-flex-direction: column !important;
+            flex-direction: column !important;
     position: fixed;
     inset: 0;
     /* left: 10%; */
     border-radius: 0px;
     top: 60px;
+    -webkit-transition: 500ms;
+    -o-transition: 500ms;
     transition: 500ms;
-    justify-content: flex-start !important;
+    -webkit-box-pack: start !important;
+        -ms-flex-pack: start !important;
+            justify-content: flex-start !important;
     z-index: 4;
     background-color:#030405;
     /* border: 1px solid var(--text-primary); */
   }
   .menu li {
     /* display: flex !important; */
-    justify-content: flex-end !important;
+    -webkit-box-pack: end !important;
+        -ms-flex-pack: end !important;
+            justify-content: flex-end !important;
     width: 100%;
     padding: 10px 30px !important;
   }
   .menu-state-mobile-off {
     /* display: none !important; */
-    transform: translateX(100%);
+    -webkit-transform: translateX(100%);
+        -ms-transform: translateX(100%);
+            transform: translateX(100%);
   }
   .menu-state-mobile-on {
     /* display: flex !important; */
-    transform: translateX(0%);
+    -webkit-transform: translateX(0%);
+        -ms-transform: translateX(0%);
+            transform: translateX(0%);
 
   }
   .menu li a {
+    display: -webkit-box !important;
+    display: -ms-flexbox !important;
     display: flex !important;
-    justify-content: space-between;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
     width: 100%;
-    flex-direction: row-reverse;
-    align-items: center;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: reverse;
+        -ms-flex-direction: row-reverse;
+            flex-direction: row-reverse;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
     padding:10px;
     margin: 0px 0px;
     font-size: 20px !important;
@@ -175,10 +224,17 @@ main {
     background-color: var(--secondary) !important;
     color: #ffffff !important;
     letter-spacing: 2px;
-    flex-direction: row-reverse;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: reverse;
+        -ms-flex-direction: row-reverse;
+            flex-direction: row-reverse;
     font-weight: 500;
-    justify-content: space-between !important;
-    align-items: center;
+    -webkit-box-pack: justify !important;
+        -ms-flex-pack: justify !important;
+            justify-content: space-between !important;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
     position: relative;
     padding:15px 30px !important;
       box-shadow: inset 0vw 3px 30px 1px rgba(21,134,221,0.6);

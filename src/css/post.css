@@ -1,3 +1,10 @@
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v8.4.14,
+* Autoprefixer: v10.4.7
+* Browsers: last 4 version
+*/
+
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap");
 
 :root {
@@ -17,7 +24,9 @@
   position: fixed !important;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
   overflow-y: scroll;
   background-color: var(--secondary);
   border-radius: var(--radius);
@@ -75,7 +84,9 @@
     margin: 0 !important;
     position: fixed !important;
     inset: 0 !important;
-    transform: translate(0, 0);
+    -webkit-transform: translate(0, 0);
+        -ms-transform: translate(0, 0);
+            transform: translate(0, 0);
     border-radius: none;
     border-radius: 0px !important;
     z-index: 1000 !important;
