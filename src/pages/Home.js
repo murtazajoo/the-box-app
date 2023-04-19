@@ -191,7 +191,7 @@ const [loading, setloading] = useState(true);
             </div>
           }
         >
-          {posts.map((post) => {
+          {userData && posts.map((post) => {
             return (
               <Tweet
                 user_id={cookie.user_id}
