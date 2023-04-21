@@ -1,4 +1,4 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FaBookmark, FaHashtag, FaBell } from "react-icons/fa";
 import { BiHomeAlt } from "react-icons/bi";
 import { MdOutlineExplore } from "react-icons/md";
@@ -9,7 +9,7 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { BsFillPersonFill } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
 
-export default function Navbar({active,loggedIn}) {
+export default function Navbar({ active, loggedIn }) {
   const [menuState, setmenuState] = useState("menu-state-mobile-off");
   function toggleMenu() {
     if (menuState === "menu-state-mobile-off") {
@@ -21,10 +21,12 @@ export default function Navbar({active,loggedIn}) {
     }
   }
 
-
   return (
     <>
-      <nav id="main-nav" className="navbar navbar-expand-lg bg-body-tertiary main-nav">
+      <nav
+        id="main-nav"
+        className="navbar navbar-expand-lg bg-body-tertiary main-nav"
+      >
         <div className="container-fluid">
           <a className="navbar-brand center-flex" href="./">
             <FaBookmark color="#1da1f2" size={40} />{" "}
@@ -38,7 +40,7 @@ export default function Navbar({active,loggedIn}) {
               >
                 {" "}
                 <form className=" center-flex me-auto mb-2 mb-lg-0 search-box">
-                  <FaHashtag  size={20} />
+                  <FaHashtag size={20} />
                   <input
                     autoComplete="off"
                     type="text"
@@ -53,11 +55,13 @@ export default function Navbar({active,loggedIn}) {
                     placement="bottom"
                   >
                     <NavLink
-                      className={`nav-link ${active ==="home" && "active-nav"} `} 
+                      className={`nav-link ${
+                        active === "home" && "active-nav"
+                      } `}
                       aria-current="page"
                       to="../"
                     >
-                      <BiHomeAlt  size={25} />
+                      <BiHomeAlt className="nav-link-icon" size={25} />
                       <span className="nav-icon-label">Home</span>
                     </NavLink>
                   </OverlayTrigger>
@@ -69,8 +73,13 @@ export default function Navbar({active,loggedIn}) {
                     overlay={(props) => <Tooltip {...props}>Explore</Tooltip>}
                     placement="bottom"
                   >
-                    <NavLink className={`nav-link ${active ==="explore" && "active-nav"} `}  href="./">
-                      <MdOutlineExplore  size={25} />
+                    <NavLink
+                      className={`nav-link ${
+                        active === "explore" && "active-nav"
+                      } `}
+                      href="./"
+                    >
+                      <MdOutlineExplore className="nav-link-icon" size={25} />
                       <span className="nav-icon-label">Explore</span>
                     </NavLink>
                   </OverlayTrigger>{" "}
@@ -83,8 +92,13 @@ export default function Navbar({active,loggedIn}) {
                     )}
                     placement="bottom"
                   >
-                    <NavLink className={`nav-link ${active ==="notification" && "active-nav"} `}  href="./">
-                      <FaBell  size={25} />
+                    <NavLink
+                      className={`nav-link ${
+                        active === "notification" && "active-nav"
+                      } `}
+                      href="./"
+                    >
+                      <FaBell className="nav-link-icon" size={25} />
                       <span className="nav-icon-label">Notification</span>
                     </NavLink>
                   </OverlayTrigger>
@@ -95,8 +109,13 @@ export default function Navbar({active,loggedIn}) {
                     overlay={(props) => <Tooltip {...props}>Messages</Tooltip>}
                     placement="bottom"
                   >
-                    <NavLink  className={`nav-link ${active ==="messages" && "active-nav"} `}  href="./">
-                      <IoMdMail  size={25} />
+                    <NavLink
+                      className={`nav-link ${
+                        active === "messages" && "active-nav"
+                      } `}
+                      href="./"
+                    >
+                      <IoMdMail className="nav-link-icon" size={25} />
                       <span className="nav-icon-label">Messages</span>
                     </NavLink>
                   </OverlayTrigger>
@@ -110,16 +129,23 @@ export default function Navbar({active,loggedIn}) {
                     overlay={(props) => <Tooltip {...props}>Profile</Tooltip>}
                     placement="bottom"
                   >
-                    <NavLink className={`nav-link ${active ==="profile" && "active-nav"} `} to="../profile">
-                      <BsFillPersonFill  size={25} />
+                    <NavLink
+                      className={`nav-link ${
+                        active === "profile" && "active-nav"
+                      } `}
+                      to="../profile"
+                    >
+                      <BsFillPersonFill className="nav-link-icon" size={25} />
                       <span className="nav-icon-label">Profile</span>
                     </NavLink>
                   </OverlayTrigger>
                 </li>
               </ul>
-              {loggedIn && <p className="menu-icon" onClick={toggleMenu}>
-                <TbGridDots  size={30} />
-              </p>}
+              {loggedIn && (
+                <p className="menu-icon" onClick={toggleMenu}>
+                  <TbGridDots size={30} />
+                </p>
+              )}
             </div>
           </div>
         </div>

@@ -147,6 +147,9 @@ input {
   font-family: var(--font-inter);
   color: var(--text-primary) !important;
 }
+.nav-link-icon {
+  color: var(--text-primary) !important;
+}
 
 .active-nav {
   background-color: var(--primary) !important;
