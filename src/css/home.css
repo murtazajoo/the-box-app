@@ -11,8 +11,6 @@
   display: none;
 }
 
-
-
 .profile-card {
   font-family: var(--font-inter);
   width: 100%;
@@ -32,7 +30,6 @@
   width: 100%;
   max-height: 200px;
 }
-
 
 .profile-card-picture {
   width: 100px !important;
@@ -55,10 +52,10 @@
   display: flex;
   position: relative;
   -ms-flex-pack: distribute;
-      justify-content: space-around;
+  justify-content: space-around;
   -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
   border-top: 1px solid var(--text-primary);
   border-bottom: 1px solid var(--text-primary);
 
@@ -89,11 +86,11 @@
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
   -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
 }
 
 /*   PATH ../components/AddTweet.js  */
@@ -160,11 +157,11 @@
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
   -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
 }
 
 .add-tweet-icon {
@@ -172,11 +169,11 @@
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
   -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
   border-radius: var(--radius);
   color: var(--text-secondary);
   font-size: 16px;
@@ -195,9 +192,9 @@
   .add-tweet-icons {
     margin-top: 5px;
     -ms-flex-pack: distribute;
-        justify-content: space-around;
+    justify-content: space-around;
     -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
+    flex-wrap: wrap;
   }
   .add-tweet-icon {
     margin: 5px;
@@ -217,22 +214,22 @@
   padding: 20px;
   margin: 15px auto;
 }
-.tweet-text{
+.tweet-text {
   white-space: pre-wrap;
-   /* word-break: break-all; */
-   font-family: var(--font-inter);
-   font-size: 16px;
+  /* word-break: break-all; */
+  font-family: var(--font-inter);
+  font-size: 16px;
 }
 .tweet-user {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
   -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
   gap: 10px;
 }
 
@@ -267,16 +264,15 @@
 }
 .tweet .saved {
   /* background-color: rgba(249, 82, 82, 0.829); */
-  background-color: #ffef62;
+  background-color: var(--saved);
   -webkit-box-shadow: 60px 30px 400px 1px #ffef628a;
-          box-shadow: 60px 30px 400px 1px #ffef628c;
-
+  box-shadow: 60px 30px 400px 1px #ffef628c;
 }
 
-.tweet .liked{
-  background-color: #ff6161;
+.tweet .liked {
+  background-color: var(--liked);
   -webkit-box-shadow: -60px 30px 200px 1px #ff616177;
-          box-shadow: -60px 30px 200px 1px #ff61618a;
+  box-shadow: -60px 30px 200px 1px #ff61618a;
 }
 
 @media (max-width: 800px) {

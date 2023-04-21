@@ -1,13 +1,19 @@
 import React, { useState } from "react";
 import "../css/login.css";
 import { Link } from "react-router-dom";
-import { BsArrowLeftShort, BsFillArrowRightCircleFill, BsFillBookmarkPlusFill, BsFillExclamationSquareFill, BsFillExclamationTriangleFill } from "react-icons/bs";
+import {
+  BsArrowLeftShort,
+  BsFillArrowRightCircleFill,
+  BsFillBookmarkPlusFill,
+  BsFillExclamationSquareFill,
+  BsFillExclamationTriangleFill,
+} from "react-icons/bs";
 import { createClient } from "@supabase/supabase-js";
 import "bootstrap";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function Login({ setLoggedIn }) {
   const supabase = createClient(
     "https://xmeyiduceoxfvciwoajn.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZXlpZHVjZW94ZnZjaXdvYWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODA1MzkzMDcsImV4cCI6MTk5NjExNTMwN30.euNOxeyYsUh6cegLmddHuVjFwU2l28IWZzPzyJ4lTRU"
@@ -23,45 +29,44 @@ export default function Login() {
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(formData);
     let { data, error } = await supabase.auth.signInWithPassword({
       email: formData.email,
       password: formData.password,
     });
     if (error) {
       setAlert(true);
-
       setTimeout(() => {
-        setAlert(false)
+        setAlert(false);
       }, 3000);
     } else {
       setAlert(false);
       const cookies = new Cookies();
       cookies.set("user_id", data.user.id, { path: "/" });
       cookies.set("access_token", data.session.access_token, { path: "/" });
+      setLoggedIn(true);
       navigate("../");
     }
   };
   return (
     <div className="login-form ">
-      <Link
-        to="/"
-        className="btn center-flex btn-outline-dark position-absolute back-btn"
-      >
-        <BsArrowLeftShort /> Go Back
-      </Link>
-     
       <form className="m-auto position-relative  p-5" onSubmit={handleSubmit}>
-   
-        <p className="text-center h3 mb-4">Login <BsFillBookmarkPlusFill class="text-warning"/> </p>
+        <Link to="/" className="btn center-flex  position-absolute  back-btn">
+          <BsArrowLeftShort /> Go Back
+        </Link>
+
+        <p className="text-center h1 mb-4">Login</p>
+        <p className="text-center d-flex justify-content-center align-items-center">
+          <BsFillBookmarkPlusFill class="text-info" size={30} />
+          <h4 className="logo">MORA</h4>{" "}
+        </p>
         {alert && (
-        <div
-          class="alert text-danger center-flex  text-center w-100 p-0 m-0 mb-2 bg-none "
-          role="alert"
-        >
-         <BsFillExclamationTriangleFill/> Invalid Login Credentials
-        </div>
-      )}
+          <div
+            class="alert text-danger center-flex  text-center w-100 p-0 m-0 mb-2 bg-none "
+            role="alert"
+          >
+            <BsFillExclamationTriangleFill /> Invalid Login Credentials
+          </div>
+        )}
         <div class="mb-3">
           <label htmlFor="exampleInputEmail1" class="form-label">
             Email address
@@ -94,7 +99,6 @@ export default function Login() {
             id="exampleInputPassword1"
             placeholder="**********"
             required
-
           />
         </div>
 
@@ -110,6 +114,13 @@ export default function Login() {
           </Link>
         </p>
       </form>
+      <div className="img w-50">
+        <img
+          src="https://source.unsplash.com/random/1920x1080/?wallpaper,landscape,sky"
+          alt=""
+          className="img-fluid"
+        />
+      </div>
     </div>
   );
 }

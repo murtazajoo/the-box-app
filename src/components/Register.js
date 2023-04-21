@@ -121,15 +121,23 @@ export default function Register() {
   });
   return (
     <>
-      <div className="signup-form">
-        <Link
-          to="/"
-          className="btn center-flex btn-outline-dark position-absolute back-btn"
+      <div className="signup-form ">
+        <form
+          className="m-auto position-relative  p-5 "
+          onSubmit={formik.handleSubmit}
         >
-          <BsArrowLeftShort /> Go Back
-        </Link>
-        <form className="m-auto    p-5" onSubmit={formik.handleSubmit}>
-          <p className="text-center h3 mb-4">SignUp <BsFillBookmarkStarFill class="text-warning"/></p>
+          <Link
+            to="/"
+            className="btn center-flex  position-absolute   back-btn"
+          >
+            <BsArrowLeftShort /> Go Back
+          </Link>
+
+          <p className="text-center h1 mb-4">Register </p>
+          <p className="text-center d-flex justify-content-center align-items-center">
+            <BsFillBookmarkStarFill class="text-info" size={30} />
+            <h4 className="logo">MORA</h4>{" "}
+          </p>
           <div class="mb-3">
             <label for="username" class="form-label">
               Username
@@ -216,7 +224,7 @@ export default function Register() {
           </div>
 
           <button type="submit" class="btn btn-primary ">
-            Signup <BsArrowRightCircleFill/>
+            Signup <BsArrowRightCircleFill />
           </button>
 
           <div className="border-bottom border-secondary my-3 w-25 m-auto"></div>
@@ -227,6 +235,13 @@ export default function Register() {
             </Link>
           </p>
         </form>
+        <div className="img w-50">
+          <img
+            src="https://source.unsplash.com/random/1920x1080/?wallpaper,landscape,sky"
+            className="img-fluid"
+            alt=""
+          />
+        </div>
       </div>
     </>
   );

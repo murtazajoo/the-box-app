@@ -1,12 +1,7 @@
 import React from "react";
 
-export default function ProfileCard({
-  name,
-  profile,
-  username,
-  following,
-  followers,
-}) {
+export default function ProfileCard({ userData }) {
+  let { name, profile, username } = userData;
   return (
     <div className="profile-card home-card-mobile mb-3">
       <p className="profile-card-banner">

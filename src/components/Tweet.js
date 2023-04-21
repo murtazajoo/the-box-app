@@ -1,12 +1,27 @@
 import React, { useState } from "react";
-import { FaHeart, FaRetweet, FaCommentAlt, FaBookmark } from "react-icons/fa";
+import { FaHeart, FaCommentAlt, FaBookmark } from "react-icons/fa";
 import { createClient } from "@supabase/supabase-js";
-export default function Tweet(props) {
-  const supabase = createClient(
-    "https://xmeyiduceoxfvciwoajn.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZXlpZHVjZW94ZnZjaXdvYWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODA1MzkzMDcsImV4cCI6MTk5NjExNTMwN30.euNOxeyYsUh6cegLmddHuVjFwU2l28IWZzPzyJ4lTRU"
-  );
-  function timeDiff(dateStr) {
+export default function Tweet({
+  post,
+  loggedIn,
+  saved,
+  setShowComments,
+  user_id,
+  supabase,
+}) {
+  let {
+    id,
+    name,
+    username,
+    profile,
+    created_at,
+    text,
+    likes,
+    liked_by,
+    comments,
+  } = post;
+
+  function created_atDiff(dateStr) {
     const date = new Date(dateStr);
     const now = new Date();
     const diff = now - date;
@@ -33,81 +48,59 @@ export default function Tweet(props) {
     }
   }
 
-  let {
-    user_id,
-    saved,
-    tweetId,
-    name,
-    username,
-    profile,
-    time,
-    text,
-    likes,
-    liked_by,
-    comments,
-    loggedIn,
-    setShowComments,
-  } = props;
-
   async function getPost() {
     let { data: posts, error } = await supabase
       .from("posts")
       .select("*")
-      .eq("id", tweetId);
-    name = posts[0].name;
-    username = posts[0].username;
-    profile = posts[0].profile;
-    time = posts[0].time;
-    text = posts[0].text;
-    likes = posts[0].likes;
-    liked_by = posts[0].liked_by;
-    comments = posts[0].comments;
+      .eq("id", id);
+
     if (error) {
       console.log(error, "Tweet.js on line 64");
+    } else {
+      post = posts[0];
     }
   }
 
   const [likesCount, setlikesCount] = useState(likes);
   const [liked, setLiked] = useState(liked_by.includes(user_id));
 
-  async function updateLikesInDatabase(tweetId, likesCount, userId, likedBy) {
+  // update likes in supabase database
+  async function updateLikesInDatabase(id, likesCount, likedBy) {
     const { data, error } = await supabase
       .from("posts")
       .update({ likes: likesCount, liked_by: likedBy })
-      .eq("id", tweetId);
+      .eq("id", id);
 
     if (error) {
       console.error(error, data);
     }
   }
 
+  // like tweet
   async function updateLikes() {
     await getPost();
-    const tweet = document.getElementById("like" + tweetId);
+    const tweet = document.getElementById("like" + id);
     const userId = user_id;
     let newLikesCount = likes;
-    const likedBy = liked_by;
+    let likedBy = liked_by;
+
     if (!liked_by.includes(userId)) {
       setLiked(true);
-      newLikesCount = likes + 1;
+      newLikesCount++;
       setlikesCount(newLikesCount);
-      updateLikesInDatabase(tweetId, newLikesCount, userId, [
-        ...likedBy,
-        userId,
-      ]);
+      updateLikesInDatabase(id, newLikesCount, [...likedBy, userId]);
       tweet.classList.add("liked");
     } else {
       setLiked(false);
-      newLikesCount = likes - 1;
-      likedBy.splice(likedBy.indexOf(userId), 1);
-      updateLikesInDatabase(tweetId, newLikesCount, userId, [...likedBy]);
+      newLikesCount--;
+      likedBy = likedBy.filter((id) => id !== userId);
+      updateLikesInDatabase(id, newLikesCount, [...likedBy]);
       tweet.classList.remove("liked");
       setlikesCount(newLikesCount);
     }
   }
 
-
-
+  // save tweet
   async function updatesaved() {
     let { data: user } = await supabase
       .from("user")
@@ -115,14 +108,14 @@ export default function Tweet(props) {
       .eq("user_id", user_id);
 
     let toSave;
-    const tweet = document.getElementById("save" + tweetId);
+    const tweet = document.getElementById("save" + id);
 
-    if (!user[0]['saved'].includes(tweetId.toString())) {
+    if (!user[0].saved.includes(id.toString())) {
       tweet.classList.add("saved");
-      toSave = [...user[0].saved, tweetId];
+      toSave = [...user[0].saved, id];
     } else {
       tweet.classList.remove("saved");
-      toSave = user[0].saved.filter((id) => id !== tweetId.toString());
+      toSave = user[0].saved.filter((id) => id !== id.toString());
     }
 
     const { data, error } = await supabase
@@ -138,12 +131,12 @@ export default function Tweet(props) {
   return (
     <div className="tweet">
       <div className="tweet-user">
-        <img src={profile} alt="user-profile"  width={50} height={50}/>
+        <img src={profile} alt="user-profile" width={50} height={50} />
         <div className="tweet-user-info">
           <p className="m-0">
             {name} <small className="text-muted">@{username}</small>
           </p>
-          <small className="text-muted">{timeDiff(time)}</small>
+          <small className="text-muted">{created_atDiff(created_at)}</small>
         </div>
       </div>
       <div className="tweet-body mt-3">
@@ -164,48 +157,46 @@ export default function Tweet(props) {
               className="text-muted"
               onClick={() => {
                 if (loggedIn) {
-                  setShowComments({ status: true, id: tweetId });
+                  setShowComments({ status: true, id: id });
                 }
               }}
             >
-              {comments} Comments
+              {comments.length} Comments
             </small>
           </div>
         </div>
         {loggedIn && (
           <div className="tweet-footer-icons mt-4 d-flex justify-content-around px-2">
             <div
-              id={"like" + tweetId}
+              id={"like" + id}
               className={`tweet-icon center-flex ${liked ? "liked" : ""}`}
               onClick={updateLikes}
             >
-              <FaHeart className="tweet-icon-inside"/>
+              <FaHeart className="tweet-icon-inside" />
               <small>{liked ? "" : ""}</small>
             </div>
 
-            {/* <NavLink
-              to={`post/${tweetId}`}
-              className="tweet-icon center-flex text-light  text-center"
-            > */}
             <div
               className="tweet-icon center-flex text-light  text-center"
               onClick={() => {
-                setShowComments({ status: true, id: tweetId });
+                setShowComments({ status: true, id: id });
               }}
             >
-              <FaCommentAlt className="tweet-icon-inside" size={15} /> <small></small>
+              <FaCommentAlt className="tweet-icon-inside" size={15} />{" "}
+              <small></small>
             </div>
             <div
-              id={"save" + tweetId}
-              className={`tweet-icon  center-flex ${saved.includes(tweetId.toString())?"saved":"" } `}
+              id={"save" + id}
+              className={`tweet-icon  center-flex ${
+                saved.includes(id.toString()) ? "saved" : ""
+              } `}
               onClick={() => {
                 updatesaved();
               }}
             >
-              <FaBookmark className="tweet-icon-inside" size={15} />{" "}
+              <FaBookmark className="tweet-icon-inside" size={15} />
               <small></small>
             </div>
-            {/* </NavLink> */}
           </div>
         )}
       </div>

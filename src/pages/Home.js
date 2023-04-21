@@ -7,42 +7,26 @@ import "../css/home.css";
 import LoginCard from "../components/LoginCard";
 import Navbar from "../components/Navbar";
 import Cookies from "universal-cookie";
-import { createClient } from "@supabase/supabase-js";
-import Post from "../components/Post";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { BsFillBookmarkCheckFill } from "react-icons/bs";
 
-export default function Home() {
-  const supabase = createClient(
-    "https://xmeyiduceoxfvciwoajn.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZXlpZHVjZW94ZnZjaXdvYWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODA1MzkzMDcsImV4cCI6MTk5NjExNTMwN30.euNOxeyYsUh6cegLmddHuVjFwU2l28IWZzPzyJ4lTRU"
-  );
-
+export default function Home({
+  loggedIn,
+  userData,
+  supabase,
+  setShowComments,
+}) {
   const [posts, setPosts] = useState([]);
-  const [cookie, setCookie] = useState({});
-  const [loggenIn, setLoggenIn] = useState(false);
-  const [userData, setUserData] = useState(null);
-  const [showComments, setShowComments] = useState({ status: false, id: 0 });
-  const [scrollCount, setScrollCount] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const cookies = new Cookies();
 
+  // gets posts from supabase and sets it to state
   async function getPosts(added) {
-  
-    let from;
-
-    if (added) {
-      from = 0;
-    } else {
-      from = posts.length;
-    }
-
-
-
+    let from = added ? 0 : posts.length;
     let { data: newPosts, error } = await supabase
       .from("posts")
       .select("*")
-      .range(from === 0 ? 0 : from , from === 0 ? 9 : from + 9)
+      .range(from, from + 9)
       .order("created_at", { ascending: false });
 
     if (newPosts) {
@@ -51,90 +35,22 @@ export default function Home() {
       } else {
         setPosts([...posts, ...newPosts]);
       }
-      if (posts.length % 10 !== 0) {
-        setHasMore(false);
-      }
-      console.log(posts)
-     
+      if (posts.length % 10 !== 0) setHasMore(false);
       return;
     } else {
       console.error(error);
     }
   }
-
+  // runs getPosts on page load
   useEffect(() => {
-    setCookie({
-      user_id: cookies.get("user_id"),
-      access_token: cookies.get("access_token"),
-    });
     getPosts();
+    return () => {
+      setPosts([]);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (cookie.user_id && cookie.access_token) {
-      setLoggenIn(true);
-    }
-  }, [cookie, loggenIn]);
-
-  useEffect(() => {
-    async function getUser(id) {
-      let { data: user } = await supabase
-        .from("user")
-        .select("*")
-        .eq("user_id", id);
-
-      if (user) {
-        setUserData(user[0]);
-        setLoggenIn(true);
-        return;
-      } else {
-        setLoggenIn(false);
-      }
-    }
-    if (loggenIn) {
-      getUser(cookie.user_id);
-    }
-  }, [loggenIn]);
-
-  const [yscroll, setYscroll] = useState(window.scrollY);
-
-  useEffect(() => {
-    function disableScroll() {
-      let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      let scrollLeft =
-        window.pageXOffset || document.documentElement.scrollLeft;
-      window.onscroll = function () {
-        window.scrollTo(scrollLeft, scrollTop);
-      };
-    }
-
-    function enableScroll() {
-      window.onscroll = function () {};
-    }
-    if (showComments.status) {
-      setYscroll(window.scrollY);
-      disableScroll();
-    } else {
-      enableScroll();
-    }
-
-    return () => {enableScroll()}
-  }, [showComments]);
-
-  useEffect(() => {
-    function onBackButtonEvent(e) {
-      e.preventDefault();
-      setShowComments({ status: false, id: 0 });
-      window.history.pushState(null, null, window.location.pathname);
-      window.scrollTo(0, yscroll);
-    }
-    window.history.pushState(null, null, window.location.pathname);
-    window.addEventListener("popstate", onBackButtonEvent, false);
-    return () => {
-      window.removeEventListener("popstate", onBackButtonEvent);
-    };
-  }, [yscroll]);
-
+  // this is for the loader
   const [loading, setloading] = useState(true);
   useEffect(() => {
     if (posts.length > 0) {
@@ -149,25 +65,29 @@ export default function Home() {
           <div className="spinner-border  text-primary " role="status"></div>{" "}
         </div>
       )}
-      <Navbar active={"home"} loggedIn={loggenIn} />
+
+      <Navbar active={"home"} loggedIn={loggedIn} />
+
       <main>
+        {/* if logged in show profile card else show login card*/}
         <div className="profile-holder">
-          {loggenIn && userData ? (
-            <ProfileCard
-              name={userData.name}
-              username={userData.username}
-              profile={userData.profile}
-              followers={userData.followers.length}
-              following={userData.following.length}
-            />
+          {loggedIn && userData ? (
+            <ProfileCard userData={userData} />
           ) : (
             <LoginCard />
           )}
         </div>
+
         <div className="main-holder">
-          {loggenIn && userData && (
-            <AddTweet user={userData} getPosts={getPosts} setPosts={setPosts} />
+          {loggedIn && userData && (
+            <AddTweet
+              supabase={supabase}
+              user={userData}
+              getPosts={getPosts}
+              setPosts={setPosts}
+            />
           )}
+
           <InfiniteScroll
             dataLength={posts.length}
             next={getPosts}
@@ -192,41 +112,21 @@ export default function Home() {
             {posts.map((post) => {
               return (
                 <Tweet
-                  user_id={cookie.user_id}
+                  supabase={supabase}
+                  post={post}
+                  user_id={cookies.get("user_id")}
                   saved={userData ? userData.saved : []}
-                  loggedIn={loggenIn}
+                  loggedIn={loggedIn}
                   key={post.id}
-                  tweetId={post.id}
-                  liked_by={post.liked_by}
-                  name={post.name}
-                  username={post.username}
-                  profile={post.profile}
-                  time={post.created_at}
-                  text={post.text}
-                  // image={post.image}
-                  likes={post.likes}
-                  comments={post.comments.length}
                   setShowComments={setShowComments}
                 />
               );
             })}
           </InfiniteScroll>
         </div>
-        <div
-          className="trending-holder"
-          onClick={() => {
-            getPosts(scrollCount);
-          }}
-        >
+        <div className="trending-holder">
           <Trending />
         </div>
-        {showComments.status && (
-          <Post
-            setShowComments={setShowComments}
-            userProfile={userData.profile}
-            postID={showComments.id}
-          />
-        )}
       </main>
     </>
   );

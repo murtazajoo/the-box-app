@@ -5,78 +5,59 @@
 * Browsers: last 4 version
 */
 
-/* @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap");
-
-:root {
-  --secondary: #1b2730;
-  --bg-secondary: #28343e;
-  --radius: 10px;
-  --text-primary: #707e8b;
-  --font-inter: "Inter", sans-serif;
-  --text-secondary: #ebedee; 
-} */
-
-.login-form {
-  min-height: 100vh;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-grid-column-align: center;
-      justify-self: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  width: 100%;
-  margin: 0 auto;
-  margin-top: 50px !important;
-}
-
-.login-form form {
-  /* border-radius: var(--radius); */
-  background-color: var(--primary) !important;
-  color: var(--text-primary);
-}
-.login-form form input {
-  background-color: var(--bg-primary);
-  border: 1px solid var(--bg-secondary) !important;
-}
-
-.back-btn {
-  top: 20px !important;
-}
-
+.login-form,
 .signup-form {
   min-height: 100vh;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -ms-grid-column-align: center;
-      justify-self: center;
+  justify-self: center;
   -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
   width: 100%;
-  margin-top: 50px !important;
-  max-width: 400px;
   margin: 0 auto;
-  margin-top: 80px !important;
+  margin-top: 50px !important;
 }
-
-.signup-form form {
-  background-color: var(--primary);
+.signup-form form,
+.login-form form {
+  /* border-radius: var(--radius); */
+  background-color: var(--primary) !important;
   color: var(--text-primary);
-}
-.signup-form form input {
-  background-color: var(--bg-primary);
-  border: 1px solid var(--bg-secondary) !important;
+  padding-top: 100px !important;
+  width: 100%;
+  max-width: 400px;
 }
 
-@media (max-width: 1000px) {
+.signup-form form input,
+.login-form form input {
+  background-color: var(--body-bg) !important;
+  border: 1px solid var(--text-primary) !important;
+  position: relative;
+}
+
+.back-btn {
+  top: 20px !important;
+  left: 20px;
+}
+
+@media (max-width: 700px) {
+  .login-form form,
+  .signup-form form {
+    margin-top: 80px !important;
+    min-height: 100vh !important;
+    max-width: 100%;
+    width: 100%;
+    margin-top: 0px !important;
+    padding-top: 150px !important;
+  }
   .login-form,
   .signup-form {
-    margin-top: 80px !important;
-    min-height: 80vh;
-    max-width: 350px;
+    margin-top: 0px !important;
+  }
+  .signup-form .img {
+    display: none;
   }
 }
 
@@ -90,9 +71,9 @@
   gap: 5px;
   text-transform: lowercase;
   -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
   -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
 }

@@ -52,9 +52,9 @@ function AddComment({ post_id, comments, getPost, userProfile }) {
       .update({ comments: [...comments, commentData] })
       .eq("id", post_id);
 
-      if(error){
-        console.error(error,data)
-      }
+    if (error) {
+      console.error(error, data);
+    }
     setFormData({ text: "" });
     getPost();
   };
@@ -84,9 +84,11 @@ function AddComment({ post_id, comments, getPost, userProfile }) {
                     name="text"
                     value={formData.text}
                   ></textarea>
-{ alert.status &&
-(<small className="text-warning">cannot use script tags in comments</small>)
-}
+                  {alert.status && (
+                    <small className="text-warning">
+                      cannot use script tags in comments
+                    </small>
+                  )}
                 </div>
                 <div className="d-flex justify-content-end mt-3">
                   <button type="submit" className="btn btn-warning">
@@ -131,7 +133,6 @@ function Comment({ text, user_id, created_at }) {
     }
   }
 
- 
   useEffect(() => {
     async function getUser() {
       let { data: user, error } = await supabase
@@ -197,15 +198,14 @@ export default function Post({ setShowComments, postID, userProfile }) {
     }
   }
 
-  
   useEffect(() => {
-    getPost()
+    getPost();
   }, []);
 
   useEffect(() => {
     if (!post && comments) return;
     setComments(post.comments);
-  }, [post,comments]);
+  }, [post, comments]);
 
   return (
     <div className="post-bg">
@@ -226,29 +226,20 @@ export default function Post({ setShowComments, postID, userProfile }) {
           </div>
         </nav>
         <div className="px-2">
-         
-          {
-          post ? (
+          {post ? (
             <Tweet
               user_id={cookies.user_id}
+              post={post}
               loggedIn={false}
               key={post.id}
-              tweetId={post.id}
-              liked_by={post.liked_by}
-              name={post.name}
-              username={post.username}
-              profile={post.profile}
-              time={post.created_at}
-              text={post.text}
-              // image={post.image}
-              likes={post.likes}
-              comments={post.comments.length}
             />
           ) : (
-          <p className="m-auto mt-5 text-center">
-          <div className="spinner-border text-primary " role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div></p>)}
+            <p className="m-auto mt-5 text-center">
+              <div className="spinner-border text-primary " role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </p>
+          )}
 
           <div className="conatiner ">
             <div className="row d-flex justify-content-center ">
@@ -266,13 +257,11 @@ export default function Post({ setShowComments, postID, userProfile }) {
                       getPost={getPost}
                     />
 
-                    {comments === [] || !comments || comments.length <= 0?(
-                      
-                        <p className="text-muted text-center text-uppercase py-5">
-                          No comments yet, be the first to comment
-                        </p>
-                      
-                    )  :(
+                    {comments === [] || !comments || comments.length <= 0 ? (
+                      <p className="text-muted text-center text-uppercase py-5">
+                        No comments yet, be the first to comment
+                      </p>
+                    ) : (
                       comments.map((comment) => {
                         return (
                           <Comment
@@ -281,9 +270,9 @@ export default function Post({ setShowComments, postID, userProfile }) {
                             user_id={comment.user_id}
                             created_at={comment.timestamp}
                           />
-                        )
+                        );
                       })
-                    ) }
+                    )}
                   </div>
                 </div>
               </div>
