@@ -1,14 +1,18 @@
+import { createClient } from "@supabase/supabase-js";
 import React, { useState } from "react";
 import { FaHeart, FaCommentAlt, FaBookmark } from "react-icons/fa";
-import { createClient } from "@supabase/supabase-js";
 export default function Tweet({
   post,
   loggedIn,
   saved,
   setShowComments,
   user_id,
-  supabase,
 }) {
+  const supabase = createClient(
+    "https://xmeyiduceoxfvciwoajn.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZXlpZHVjZW94ZnZjaXdvYWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODA1MzkzMDcsImV4cCI6MTk5NjExNTMwN30.euNOxeyYsUh6cegLmddHuVjFwU2l28IWZzPzyJ4lTRU"
+  );
+
   let {
     id,
     name,
@@ -57,7 +61,8 @@ export default function Tweet({
     if (error) {
       console.log(error, "Tweet.js on line 64");
     } else {
-      post = posts[0];
+      likes = posts[0].likes;
+      liked_by = posts[0].liked_by;
     }
   }
 
@@ -80,23 +85,22 @@ export default function Tweet({
   async function updateLikes() {
     await getPost();
     const tweet = document.getElementById("like" + id);
-    const userId = user_id;
     let newLikesCount = likes;
     let likedBy = liked_by;
 
-    if (!liked_by.includes(userId)) {
-      setLiked(true);
-      newLikesCount++;
-      setlikesCount(newLikesCount);
-      updateLikesInDatabase(id, newLikesCount, [...likedBy, userId]);
-      tweet.classList.add("liked");
-    } else {
+    if (liked_by.includes(user_id)) {
       setLiked(false);
-      newLikesCount--;
-      likedBy = likedBy.filter((id) => id !== userId);
-      updateLikesInDatabase(id, newLikesCount, [...likedBy]);
-      tweet.classList.remove("liked");
+      newLikesCount = likes - 1;
       setlikesCount(newLikesCount);
+      tweet.classList.remove("liked");
+      likedBy.splice(likedBy.indexOf(user_id), 1);
+      updateLikesInDatabase(id, newLikesCount, [...likedBy]);
+    } else {
+      setLiked(true);
+      tweet.classList.add("liked");
+      newLikesCount = likes + 1;
+      setlikesCount(newLikesCount);
+      updateLikesInDatabase(id, newLikesCount, [...likedBy, user_id]);
     }
   }
 

@@ -26,15 +26,7 @@ export default function AddTweet(props) {
       profile: props.user.profile,
       username: props.user.username,
     };
-    if (/<[a-z][\s\S]*>/i.test(formData.text)) {
-      setAlert({
-        status: true,
-        type: "error",
-        message: "Html tags are not allowed",
-      });
 
-      return;
-    }
     const { data, error } = await supabase.from("posts").insert([postData]);
 
     if (error) {
@@ -44,19 +36,22 @@ export default function AddTweet(props) {
         type: "error",
         message: "An error occured while Posting, please refresh and try again",
       });
+      setTimeout(() => {
+        setAlert({ status: false });
+      }, 3000);
     } else {
       setAlert({
         status: true,
         type: "success",
         message: "Post Uploaded Successfully",
       });
+      setTimeout(() => {
+        setAlert({ status: false });
+      }, 3000);
 
       props.getPosts(true);
       setFormData({ text: "" });
     }
-    setTimeout(() => {
-      setAlert({ status: false });
-    }, 3000);
   };
 
   return (
