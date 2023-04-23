@@ -79,7 +79,9 @@ export default function Register(setLoggedIn) {
     "https://xmeyiduceoxfvciwoajn.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZXlpZHVjZW94ZnZjaXdvYWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODA1MzkzMDcsImV4cCI6MTk5NjExNTMwN30.euNOxeyYsUh6cegLmddHuVjFwU2l28IWZzPzyJ4lTRU"
   );
-
+  function goHome() {
+    navigate("../");
+  }
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -111,10 +113,10 @@ export default function Register(setLoggedIn) {
 
         const cookies = new Cookies();
         cookies.set("user_id", userinfo["user_id"], { path: "/" });
+        setLoggedIn(true);
         cookies.set("access_token", data.session.access_token, { path: "/" });
         console.log("redirecting......");
-        setLoggedIn(true);
-        navigate("../");
+        goHome();
       } else {
         console.log(error, "signup 75");
       }

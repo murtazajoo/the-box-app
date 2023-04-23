@@ -5,7 +5,6 @@ import {
   BsArrowLeftShort,
   BsFillArrowRightCircleFill,
   BsFillBookmarkPlusFill,
-  BsFillExclamationSquareFill,
   BsFillExclamationTriangleFill,
 } from "react-icons/bs";
 import { createClient } from "@supabase/supabase-js";
