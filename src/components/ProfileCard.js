@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function ProfileCard({ userData }) {
   let { name, profile, username } = userData;
@@ -29,9 +30,9 @@ export default function ProfileCard({ userData }) {
         </div> */}
         <div className="my-4">
           <p>
-            <a href="./" className="text-primary text-decoration-none">
+            <Link to="../profile" className="text-primary text-decoration-none">
               My Profile
-            </a>
+            </Link>
           </p>
         </div>
       </div>

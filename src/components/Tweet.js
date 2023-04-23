@@ -1,18 +1,13 @@
 import { createClient } from "@supabase/supabase-js";
 import React, { useState } from "react";
 import { FaHeart, FaCommentAlt, FaBookmark } from "react-icons/fa";
-export default function Tweet({
-  post,
-  loggedIn,
-  saved,
-  setShowComments,
-  user_id,
-}) {
+export default function Tweet({ post, loggedIn, setShowComments, userData }) {
   const supabase = createClient(
     "https://xmeyiduceoxfvciwoajn.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZXlpZHVjZW94ZnZjaXdvYWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODA1MzkzMDcsImV4cCI6MTk5NjExNTMwN30.euNOxeyYsUh6cegLmddHuVjFwU2l28IWZzPzyJ4lTRU"
   );
 
+  let { user_id, saved } = userData;
   let {
     id,
     name,
@@ -106,30 +101,39 @@ export default function Tweet({
 
   // save tweet
   async function updatesaved() {
-    let { data: user } = await supabase
-      .from("user")
-      .select("*")
-      .eq("user_id", user_id);
-
-    let toSave;
     const tweet = document.getElementById("save" + id);
+    let userSaved = saved;
+    async function getuser() {
+      let { data: users } = await supabase
+        .from("user")
+        .select("*")
+        .eq("user_id", user_id);
+      userSaved = users[0].saved;
+    }
 
-    if (!user[0].saved.includes(id.toString())) {
+    await getuser();
+
+    let toSave = [...userSaved];
+    console.log(userSaved);
+    if (!userSaved.includes(id.toString())) {
       tweet.classList.add("saved");
-      toSave = [...user[0].saved, id];
+      toSave = [...userSaved, id.toString()];
     } else {
       tweet.classList.remove("saved");
-      toSave = user[0].saved.filter((id) => id !== id.toString());
+      toSave.splice(userSaved.indexOf(id.toString()), 1);
     }
 
-    const { data, error } = await supabase
-      .from("user")
-      .update({ saved: toSave })
-      .eq("user_id", user_id);
+    async function updateSavedInDatabase() {
+      const { data, error } = await supabase
+        .from("user")
+        .update({ saved: toSave })
+        .eq("user_id", user_id);
 
-    if (error) {
-      console.error(error, data);
+      if (error) {
+        console.error(error, data);
+      }
     }
+    updateSavedInDatabase();
   }
 
   return (

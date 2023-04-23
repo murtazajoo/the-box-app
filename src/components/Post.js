@@ -171,7 +171,12 @@ function Comment({ text, user_id, created_at }) {
   );
 }
 
-export default function Post({ setShowComments, postID, userProfile }) {
+export default function Post({
+  setShowComments,
+  postID,
+  userProfile,
+  userData,
+}) {
   const [post, setPost] = useState(false);
   const [comments, setComments] = useState([]);
   // fetch post
@@ -227,57 +232,59 @@ export default function Post({ setShowComments, postID, userProfile }) {
         </nav>
         <div className="px-2">
           {post ? (
-            <Tweet
-              user_id={cookies.user_id}
-              post={post}
-              loggedIn={false}
-              key={post.id}
-            />
-          ) : (
-            <p className="m-auto mt-5 text-center">
-              <div className="spinner-border text-primary " role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
-            </p>
-          )}
+            <>
+              <Tweet
+                userData={userData}
+                post={post}
+                loggedIn={false}
+                key={post.id}
+              />
 
-          <div className="conatiner ">
-            <div className="row d-flex justify-content-center ">
-              <div className="col-md-12 col-lg-12">
-                <div className="card shadow-0 border-0  comments">
-                  <div className="card-body p-4">
-                    <h3 className="text mb-4">
-                      comments ({comments && comments.length})
-                    </h3>
+              <div className="conatiner ">
+                <div className="row d-flex justify-content-center ">
+                  <div className="col-md-12 col-lg-12">
+                    <div className="card shadow-0 border-0  comments">
+                      <div className="card-body p-4">
+                        <h3 className="text mb-4">
+                          comments ({comments && comments.length})
+                        </h3>
 
-                    <AddComment
-                      post_id={postID}
-                      comments={comments}
-                      userProfile={userProfile}
-                      getPost={getPost}
-                    />
+                        <AddComment
+                          post_id={postID}
+                          comments={comments}
+                          userProfile={userProfile}
+                          getPost={getPost}
+                        />
 
-                    {comments === [] || !comments || comments.length <= 0 ? (
-                      <p className="text-muted text-center text-uppercase py-5">
-                        No comments yet, be the first to comment
-                      </p>
-                    ) : (
-                      comments.map((comment) => {
-                        return (
-                          <Comment
-                            key={comment.timestamp}
-                            text={comment.text}
-                            user_id={comment.user_id}
-                            created_at={comment.timestamp}
-                          />
-                        );
-                      })
-                    )}
+                        {comments === [] ||
+                        !comments ||
+                        comments.length <= 0 ? (
+                          <p className="text-muted text-center text-uppercase py-5">
+                            No comments yet, be the first to comment
+                          </p>
+                        ) : (
+                          comments.map((comment) => {
+                            return (
+                              <Comment
+                                key={comment.timestamp}
+                                text={comment.text}
+                                user_id={comment.user_id}
+                                created_at={comment.timestamp}
+                              />
+                            );
+                          })
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </>
+          ) : (
+            <p className="m-auto my-5 text-center">
+              <span className="">Loading...</span>
+            </p>
+          )}
         </div>
       </div>
     </div>

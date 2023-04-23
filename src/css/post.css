@@ -8,24 +8,24 @@
 .post-container {
   max-width: 700px !important;
   min-width: 700px !important;
-
+  min-height: 600px;
   max-height: 600px !important;
   margin: 0 auto !important;
   position: fixed !important;
   left: 50%;
   top: 50%;
   -webkit-transform: translate(-50%, -50%);
-      -ms-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
   overflow-y: scroll;
   background-color: var(--primary);
-  color: var(--text-primary) !important; 
+  color: var(--text-primary) !important;
   border-radius: var(--radius);
 }
-.text{
+.text {
   color: var(--text-primary) !important;
 }
-.input{
+.input {
   color: var(--text-primary) !important;
   background-color: var(--primary) !important;
   border: 1px solid var(--text-primary) !important;
@@ -39,17 +39,15 @@
   border-radius: 0px;
   margin: 0px;
   z-index: 999;
-
 }
 
 .post-container::-webkit-scrollbar {
   display: none;
 }
 .post-container nav {
-
   background-color: var(--primary) !important;
   border-bottom: 1px solid var(--text-primary);
-  color: var(--text-primary )!important;
+  color: var(--text-primary) !important;
   position: sticky !important;
   top: 0;
   max-width: 700px;
@@ -63,13 +61,11 @@
 }
 .comments {
   background-color: var(--primary) !important;
-  color: var(--text-primary) !important; 
-
+  color: var(--text-primary) !important;
 }
 .comment {
   background-color: var(--primary) !important;
-  color: var(--text-primary) !important; 
-
+  color: var(--text-primary) !important;
 }
 .comment img {
   border-radius: 50%;
@@ -90,15 +86,13 @@
     position: fixed !important;
     inset: 0 !important;
     -webkit-transform: translate(0, 0);
-        -ms-transform: translate(0, 0);
-            transform: translate(0, 0);
+    -ms-transform: translate(0, 0);
+    transform: translate(0, 0);
     border-radius: none;
     border-radius: 0px !important;
     z-index: 1000 !important;
     overflow-x: hidden !important;
-  color: var(--text-primary) !important; 
-
-    
+    color: var(--text-primary) !important;
   }
   .post-container nav {
     max-width: 100% !important;
@@ -108,8 +102,7 @@
   }
 }
 
-
-.comment-text{
+.comment-text {
   white-space: pre-wrap;
   /* word-break: break-all; */
   font-family: var(--font-inter);

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import Cookies from "universal-cookie";
 import { createClient } from "@supabase/supabase-js";
 import Post from "./components/Post";
-import Navbar from "./components/Navbar";
+import Profile from "./pages/Profile";
 
 function App() {
   // supabase client
@@ -55,26 +55,21 @@ function App() {
     }
   }, [loggedIn]);
 
-  // if user clicks back button of the browser on comments page it will close the comments
-  useEffect(() => {
-    function onBackButtonEvent(e) {
-      e.preventDefault();
-      setShowComments({ status: false, id: 0 });
-      window.history.pushState(null, null, window.location.pathname);
-      window.scrollTo(0, yscroll);
-    }
-    window.history.pushState(null, null, window.location.pathname);
-    window.addEventListener("popstate", onBackButtonEvent, false);
-    return () => {
-      window.removeEventListener("popstate", onBackButtonEvent);
-    };
-  }, [yscroll]);
-
   // it will stop scrolling when comments are open
   useEffect(() => {
     if (showComments.status) {
-      setYscroll(window.scrollY);
       document.body.style.overflow = "hidden";
+      function onBackButtonEvent(e) {
+        e.preventDefault();
+        setShowComments({ status: false, id: 0 });
+        window.history.pushState(null, null, window.location.pathname);
+        window.scrollTo(0, window.scrollY);
+      }
+      window.history.pushState(null, null, window.location.pathname);
+      window.addEventListener("popstate", onBackButtonEvent, false);
+      return () => {
+        window.removeEventListener("popstate", onBackButtonEvent);
+      };
     } else {
       document.body.style.overflow = "auto";
     }
@@ -103,7 +98,22 @@ function App() {
           }
         />
         <Route path="login" element={<Login setLoggedIn={setLoggedIn} />} />
-        <Route path="signup" element={<Register />} />
+        <Route path="signup" element={<Register setLoggedIn={setLoggedIn} />} />
+        {userData && (
+          <Route
+            path="profile"
+            element={
+              <Profile
+                userData={userData}
+                supabase={supabase}
+                setUserData={setUserData}
+                setShowComments={setShowComments}
+              />
+            }
+          />
+        )}
+
+        <Route path="*" element={<h1>404 Not Found</h1>} />
       </Routes>
 
       {showComments.status && (
@@ -111,6 +121,7 @@ function App() {
           setShowComments={setShowComments}
           userProfile={userData.profile}
           postID={showComments.id}
+          userData={userData}
         />
       )}
     </BrowserRouter>

@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { FaBookmark, FaHashtag, FaBell } from "react-icons/fa";
-import { BiHomeAlt } from "react-icons/bi";
-import { MdOutlineExplore } from "react-icons/md";
-import { IoMdMail } from "react-icons/io";
+import { FaBookmark, FaHashtag } from "react-icons/fa";
+
 import { TbGridDots } from "react-icons/tb";
 import Tooltip from "react-bootstrap/Tooltip";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import { BsFillPersonFill } from "react-icons/bs";
+import {
+  FiHome,
+  FiCompass,
+  FiUser,
+  FiMail,
+  FiBell,
+  FiLogOut,
+} from "react-icons/fi";
 import { NavLink } from "react-router-dom";
+import Cookies from "universal-cookie";
 
 export default function Navbar({ active, loggedIn }) {
   const [menuState, setmenuState] = useState("menu-state-mobile-off");
+  let cookie = new Cookies();
   function toggleMenu() {
     if (menuState === "menu-state-mobile-off") {
       setmenuState("menu-state-mobile-on");
@@ -20,6 +27,23 @@ export default function Navbar({ active, loggedIn }) {
       document.body.style.overflow = "auto";
     }
   }
+  useEffect(() => {
+    if (menuState === "menu-state-mobile-on") {
+      document.body.style.overflow = "hidden";
+      function onBackButtonEvent(e) {
+        e.preventDefault();
+        setmenuState("menu-state-mobile-off");
+        window.history.pushState(null, null, window.location.pathname);
+      }
+      window.history.pushState(null, null, window.location.pathname);
+      window.addEventListener("popstate", onBackButtonEvent, false);
+      return () => {
+        window.removeEventListener("popstate", onBackButtonEvent);
+      };
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [menuState]);
 
   return (
     <>
@@ -35,112 +59,133 @@ export default function Navbar({ active, loggedIn }) {
 
           <div className="" id="navbarSupportedContent">
             <div className="mb-2">
-              <ul
-                className={`navbar-nav m-auto center-flex menu  mb-lg-0 ${menuState}`}
-              >
-                {" "}
-                <form className=" center-flex me-auto mb-2 mb-lg-0 search-box">
-                  <FaHashtag size={20} />
-                  <input
-                    autoComplete="off"
-                    type="text"
-                    placeholder="Search Mora"
-                    className="bg-transparent border-0 outline-0"
-                  />
-                </form>
-                <li className="nav-item">
-                  <OverlayTrigger
-                    delay={{ hide: 450, show: 300 }}
-                    overlay={(props) => <Tooltip {...props}>Home</Tooltip>}
-                    placement="bottom"
-                  >
-                    <NavLink
-                      className={`nav-link ${
-                        active === "home" && "active-nav"
-                      } `}
-                      aria-current="page"
-                      to="../"
-                    >
-                      <BiHomeAlt className="nav-link-icon" size={25} />
-                      <span className="nav-icon-label">Home</span>
-                    </NavLink>
-                  </OverlayTrigger>
-                </li>
-                <li className="nav-item">
+              {loggedIn && (
+                <ul
+                  className={`navbar-nav m-auto center-flex menu  mb-lg-0 ${menuState}`}
+                >
                   {" "}
-                  <OverlayTrigger
-                    delay={{ hide: 450, show: 300 }}
-                    overlay={(props) => <Tooltip {...props}>Explore</Tooltip>}
-                    placement="bottom"
-                  >
-                    <NavLink
-                      className={`nav-link ${
-                        active === "explore" && "active-nav"
-                      } `}
-                      href="./"
+                  <form className=" center-flex me-auto mb-2 mb-lg-0 search-box">
+                    <FaHashtag size={20} />
+                    <input
+                      autoComplete="off"
+                      type="text"
+                      placeholder="Search Mora"
+                      className="bg-transparent border-0 outline-0"
+                    />
+                  </form>
+                  <li className="nav-item">
+                    <OverlayTrigger
+                      delay={{ hide: 450, show: 300 }}
+                      overlay={(props) => <Tooltip {...props}>Home</Tooltip>}
+                      placement="bottom"
                     >
-                      <MdOutlineExplore className="nav-link-icon" size={25} />
-                      <span className="nav-icon-label">Explore</span>
-                    </NavLink>
-                  </OverlayTrigger>{" "}
-                </li>
-                <li className="nav-item">
-                  <OverlayTrigger
-                    delay={{ hide: 450, show: 300 }}
-                    overlay={(props) => (
-                      <Tooltip {...props}>Notification</Tooltip>
-                    )}
-                    placement="bottom"
-                  >
-                    <NavLink
-                      className={`nav-link ${
-                        active === "notification" && "active-nav"
-                      } `}
-                      href="./"
+                      <NavLink
+                        className={`nav-link ${
+                          active === "home" && "active-nav"
+                        } `}
+                        aria-current="page"
+                        to="../"
+                      >
+                        <FiHome className="nav-link-icon" size={25} />
+                        <span className={`nav-icon-label `}>Home</span>
+                      </NavLink>
+                    </OverlayTrigger>
+                  </li>
+                  <li className="nav-item">
+                    {" "}
+                    <OverlayTrigger
+                      delay={{ hide: 450, show: 300 }}
+                      overlay={(props) => <Tooltip {...props}>Explore</Tooltip>}
+                      placement="bottom"
                     >
-                      <FaBell className="nav-link-icon" size={25} />
-                      <span className="nav-icon-label">Notification</span>
-                    </NavLink>
-                  </OverlayTrigger>
-                </li>
-                <li className="nav-item">
-                  <OverlayTrigger
-                    delay={{ hide: 450, show: 300 }}
-                    overlay={(props) => <Tooltip {...props}>Messages</Tooltip>}
-                    placement="bottom"
-                  >
-                    <NavLink
-                      className={`nav-link ${
-                        active === "messages" && "active-nav"
-                      } `}
-                      href="./"
+                      <NavLink
+                        className={`nav-link ${
+                          active === "explore" && "active-nav"
+                        } `}
+                        href="./"
+                      >
+                        <FiCompass className="nav-link-icon" size={25} />
+                        <span className="nav-icon-label">Explore</span>
+                      </NavLink>
+                    </OverlayTrigger>{" "}
+                  </li>
+                  <li className="nav-item">
+                    <OverlayTrigger
+                      delay={{ hide: 450, show: 300 }}
+                      overlay={(props) => (
+                        <Tooltip {...props}>Notification</Tooltip>
+                      )}
+                      placement="bottom"
                     >
-                      <IoMdMail className="nav-link-icon" size={25} />
-                      <span className="nav-icon-label">Messages</span>
-                    </NavLink>
-                  </OverlayTrigger>
-                </li>
-                <li className="nav-item">
-                  <div className="divider"></div>
-                </li>
-                <li className="nav-item">
-                  <OverlayTrigger
-                    delay={{ hide: 450, show: 300 }}
-                    overlay={(props) => <Tooltip {...props}>Profile</Tooltip>}
-                    placement="bottom"
-                  >
-                    <NavLink
-                      className={`nav-link ${
-                        active === "profile" && "active-nav"
-                      } `}
-                      to="../profile"
+                      <NavLink
+                        className={`nav-link ${
+                          active === "notification" && "active-nav"
+                        } `}
+                        href="./"
+                      >
+                        <FiBell className="nav-link-icon" size={25} />
+                        <span className="nav-icon-label">Notification</span>
+                      </NavLink>
+                    </OverlayTrigger>
+                  </li>
+                  <li className="nav-item">
+                    <OverlayTrigger
+                      delay={{ hide: 450, show: 300 }}
+                      overlay={(props) => (
+                        <Tooltip {...props}>Messages</Tooltip>
+                      )}
+                      placement="bottom"
                     >
-                      <BsFillPersonFill className="nav-link-icon" size={25} />
-                      <span className="nav-icon-label">Profile</span>
-                    </NavLink>
-                  </OverlayTrigger>
-                </li>
-              </ul>
+                      <NavLink
+                        className={`nav-link ${
+                          active === "messages" && "active-nav"
+                        } `}
+                        href="./"
+                      >
+                        <FiMail className="nav-link-icon" size={25} />
+                        <span className="nav-icon-label">Messages</span>
+                      </NavLink>
+                    </OverlayTrigger>
+                  </li>
+                  <li className="nav-item">
+                    <OverlayTrigger
+                      delay={{ hide: 450, show: 300 }}
+                      overlay={(props) => <Tooltip {...props}>Profile</Tooltip>}
+                      placement="bottom"
+                    >
+                      <NavLink
+                        className={`nav-link ${
+                          active === "profile" && "active-nav"
+                        } `}
+                        to="../profile"
+                      >
+                        <FiUser className="nav-link-icon" size={25} />
+                        <span className="nav-icon-label">Profile</span>
+                      </NavLink>
+                    </OverlayTrigger>
+                  </li>
+                  <li>
+                    <div className="divider"></div>
+                  </li>
+                  <li
+                    className="nav-item "
+                    onClick={() => {
+                      cookie.set("user_id", "", { path: "/" });
+                    }}
+                  >
+                    <OverlayTrigger
+                      delay={{ hide: 450, show: 300 }}
+                      overlay={(props) => <Tooltip {...props}>LogOut</Tooltip>}
+                      placement="bottom"
+                    >
+                      <a href="../" className={`nav-link `}>
+                        <FiLogOut className="nav-link-icon" size={15} />
+                        <span className="nav-icon-label h6">LogOut</span>
+                      </a>
+                    </OverlayTrigger>
+                  </li>
+                </ul>
+              )}
               {loggedIn && (
                 <p className="menu-icon" onClick={toggleMenu}>
                   <TbGridDots size={30} />

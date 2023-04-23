@@ -74,7 +74,7 @@ const validate = async (values) => {
   return errors;
 };
 
-export default function Register() {
+export default function Register(setLoggedIn) {
   const supabase = createClient(
     "https://xmeyiduceoxfvciwoajn.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZXlpZHVjZW94ZnZjaXdvYWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODA1MzkzMDcsImV4cCI6MTk5NjExNTMwN30.euNOxeyYsUh6cegLmddHuVjFwU2l28IWZzPzyJ4lTRU"
@@ -113,6 +113,7 @@ export default function Register() {
         cookies.set("user_id", userinfo["user_id"], { path: "/" });
         cookies.set("access_token", data.session.access_token, { path: "/" });
         console.log("redirecting......");
+        setLoggedIn(true);
         navigate("../");
       } else {
         console.log(error, "signup 75");

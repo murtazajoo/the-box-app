@@ -6,7 +6,6 @@ import Tweet from "../components/Tweet";
 import "../css/home.css";
 import LoginCard from "../components/LoginCard";
 import Navbar from "../components/Navbar";
-import Cookies from "universal-cookie";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { BsFillBookmarkCheckFill } from "react-icons/bs";
 
@@ -18,7 +17,6 @@ export default function Home({
 }) {
   const [posts, setPosts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
-  const cookies = new Cookies();
 
   // gets posts from supabase and sets it to state
   async function getPosts(added) {
@@ -51,7 +49,7 @@ export default function Home({
   }, []);
 
   // this is for the loader
-  const [loading, setloading] = useState(true);
+  const [loading, setloading] = useState(false);
   useEffect(() => {
     if (posts.length > 0) {
       setloading(false);
@@ -60,74 +58,80 @@ export default function Home({
 
   return (
     <>
-      {loading && (
+      <Navbar active={"home"} loggedIn={loggedIn} />
+
+      {loading ? (
         <div className="loader">
           <div className="spinner-border  text-primary " role="status"></div>{" "}
         </div>
-      )}
+      ) : (
+        <main>
+          {/* if logged in show profile card else show login card*/}
+          <div className="profile-holder">
+            {loggedIn && userData ? (
+              <ProfileCard userData={userData} />
+            ) : (
+              <LoginCard />
+            )}
+          </div>
 
-      <Navbar active={"home"} loggedIn={loggedIn} />
+          <div className="main-holder">
+            {loggedIn && userData && (
+              <AddTweet
+                supabase={supabase}
+                user={userData}
+                getPosts={getPosts}
+                setPosts={setPosts}
+              />
+            )}
 
-      <main>
-        {/* if logged in show profile card else show login card*/}
-        <div className="profile-holder">
-          {loggedIn && userData ? (
-            <ProfileCard userData={userData} />
-          ) : (
-            <LoginCard />
-          )}
-        </div>
-
-        <div className="main-holder">
-          {loggedIn && userData && (
-            <AddTweet
-              supabase={supabase}
-              user={userData}
-              getPosts={getPosts}
-              setPosts={setPosts}
-            />
-          )}
-
-          <InfiniteScroll
-            dataLength={posts.length}
-            next={getPosts}
-            hasMore={hasMore}
-            loader={
-              <div className="m-auto mt-5 text-center">
-                <div className="spinner-border text-primary " role="status">
-                  <span className="visually-hidden">Loading...</span>
+            <InfiniteScroll
+              dataLength={posts.length}
+              next={getPosts}
+              hasMore={hasMore}
+              loader={
+                <div className="m-auto mt-5 text-center">
+                  <div className="spinner-border text-primary " role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
                 </div>
-              </div>
-            }
-            endMessage={
-              <div className="text-center">
-                <p>
-                  {" "}
-                  <BsFillBookmarkCheckFill size={40} className="text-success" />
-                </p>
-                <p className="text-success">Yay, You have seen it all</p>
-              </div>
-            }
-          >
-            {posts.map((post) => {
-              return (
-                <Tweet
-                  supabase={supabase}
-                  post={post}
-                  user_id={cookies.get("user_id")}
-                  saved={userData ? userData.saved : []}
-                  loggedIn={loggedIn}
-                  key={post.id}
-                  setShowComments={setShowComments}
-                />
-              );
-            })}
-          </InfiniteScroll>
-        </div>
-        <div className="trending-holder">
-          <Trending />
-        </div>
-      </main>
+              }
+              endMessage={
+                <div className="text-center">
+                  <p>
+                    {" "}
+                    <BsFillBookmarkCheckFill
+                      size={40}
+                      className="text-success"
+                    />
+                  </p>
+                  <p className="text-success">Yay, You have seen it all</p>
+                </div>
+              }
+            >
+              {posts.map((post) => {
+                return (
+                  <Tweet
+                    supabase={supabase}
+                    post={post}
+                    userData={
+                      loggedIn && userData
+                        ? userData
+                        : { user_id: "", saved: [] }
+                    }
+                    loggedIn={loggedIn}
+                    key={post.id}
+                    setShowComments={setShowComments}
+                  />
+                );
+              })}
+            </InfiniteScroll>
+          </div>
+          <div className="trending-holder">
+            <Trending />
+          </div>
+        </main>
+      )}
     </>
   );
 }
