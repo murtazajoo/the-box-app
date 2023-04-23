@@ -71,7 +71,24 @@ export default function Home({
             {loggedIn && userData ? (
               <ProfileCard userData={userData} />
             ) : (
-              <LoginCard />
+              <>
+                <LoginCard />
+                <div
+                  class="alert alert-warning alert-dismissible my-2"
+                  role="alert"
+                >
+                  {" "}
+                  <strong>Alert!</strong> This App is still in development.{" "}
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"
+                  >
+                    {" "}
+                  </button>{" "}
+                </div>
+              </>
             )}
           </div>
 

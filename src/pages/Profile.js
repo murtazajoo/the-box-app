@@ -98,7 +98,7 @@ export default function Profile({
                     }}
                     className={`btn rounded-0 ${!showSaved && "btn-dark"}`}
                   >
-                    Tweets
+                    Drops
                   </button>
                   <button
                     onClick={() => {

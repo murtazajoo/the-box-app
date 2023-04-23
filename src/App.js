@@ -19,40 +19,40 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
   const [showComments, setShowComments] = useState({ status: false, id: 0 });
-  const [yscroll, setYscroll] = useState(window.scrollY);
 
   const cookies = new Cookies();
-
-  // an function which gets user data from supabase and sets it to state  also sets loggedIn state
-  async function getUser() {
-    let { data: user } = await supabase
-      .from("user")
-      .select("*")
-      .eq("user_id", cookies.get("user_id"));
-
-    if (user) {
-      setUserData(user[0]);
-      return;
-    } else {
-      setLoggedIn(false);
-    }
-  }
 
   // checks if user is logged in on page load and invokes getUser function
   useEffect(() => {
     if (cookies.get("user_id")) {
       setLoggedIn(true);
-      getUser();
     } else {
       setLoggedIn(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // if user logs in it will invoke getUser function
   useEffect(() => {
+    // an function which gets user data from supabase and sets it to state  also sets loggedIn state
+    async function getUser() {
+      let { data: user } = await supabase
+        .from("user")
+        .select("*")
+        .eq("user_id", cookies.get("user_id"));
+
+      if (user) {
+        setUserData(user[0]);
+        return;
+      } else {
+        setLoggedIn(false);
+      }
+    }
+
     if (loggedIn) {
       getUser();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn]);
 
   // it will stop scrolling when comments are open
