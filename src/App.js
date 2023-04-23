@@ -8,7 +8,7 @@ import Cookies from "universal-cookie";
 import { createClient } from "@supabase/supabase-js";
 import Post from "./components/Post";
 import Profile from "./pages/Profile";
-
+import { Analytics } from "@vercel/analytics/react";
 function App() {
   // supabase client
   const supabase = createClient(
@@ -124,6 +124,8 @@ function App() {
           userData={userData}
         />
       )}
+
+      <Analytics />
     </BrowserRouter>
   );
 }
