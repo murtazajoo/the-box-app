@@ -74,14 +74,14 @@ export default function Home({
               <>
                 <LoginCard />
                 <div
-                  class="alert alert-warning alert-dismissible my-2"
+                  className="alert alert-warning alert-dismissible my-2"
                   role="alert"
                 >
                   {" "}
                   <strong>Alert!</strong> This App is still in development.{" "}
                   <button
                     type="button"
-                    class="btn-close"
+                    className="btn-close"
                     data-bs-dismiss="alert"
                     aria-label="Close"
                   >

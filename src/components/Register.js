@@ -10,7 +10,7 @@ import { useFormik } from "formik";
 
 import { createClient } from "@supabase/supabase-js";
 import Cookies from "universal-cookie";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 // Create a single supabase client for interacting with your database
 
 const validate = async (values) => {
@@ -74,15 +74,13 @@ const validate = async (values) => {
   return errors;
 };
 
-export default function Register(setLoggedIn) {
+export default function Register(setLoggedIn, loggedIn) {
   const supabase = createClient(
     "https://xmeyiduceoxfvciwoajn.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZXlpZHVjZW94ZnZjaXdvYWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODA1MzkzMDcsImV4cCI6MTk5NjExNTMwN30.euNOxeyYsUh6cegLmddHuVjFwU2l28IWZzPzyJ4lTRU"
   );
-  function goHome() {
-    navigate("../");
-  }
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -113,15 +111,17 @@ export default function Register(setLoggedIn) {
 
         const cookies = new Cookies();
         cookies.set("user_id", userinfo["user_id"], { path: "/" });
-        setLoggedIn(true);
+        // setLoggedIn(true);
         cookies.set("access_token", data.session.access_token, { path: "/" });
         console.log("redirecting......");
-        goHome();
+        // need to fix this
+        window.location = "../";
       } else {
         console.log(error, "signup 75");
       }
     },
   });
+
   return (
     <>
       <div className="signup-form ">
@@ -142,7 +142,7 @@ export default function Register(setLoggedIn) {
             <h4 className="logo">MORA</h4>{" "}
           </p>
           <div class="mb-3">
-            <label for="username" class="form-label">
+            <label htmlFor="username" class="form-label">
               Username
             </label>
             <input
@@ -161,7 +161,7 @@ export default function Register(setLoggedIn) {
             ) : null}
           </div>
           <div class="mb-3">
-            <label for="name" class="form-label">
+            <label htmlFor="name" class="form-label">
               Full Name
             </label>
             <input
@@ -182,7 +182,7 @@ export default function Register(setLoggedIn) {
             ) : null}
           </div>
           <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">
+            <label htmlFor="exampleInputEmail1" class="form-label">
               Email address
             </label>
             <input
@@ -206,7 +206,7 @@ export default function Register(setLoggedIn) {
             </div>
           </div>
           <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">
+            <label htmlFor="exampleInputPassword1" class="form-label">
               Password
             </label>
             <input

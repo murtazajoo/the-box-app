@@ -98,7 +98,10 @@ function App() {
           }
         />
         <Route path="login" element={<Login setLoggedIn={setLoggedIn} />} />
-        <Route path="signup" element={<Register setLoggedIn={setLoggedIn} />} />
+        <Route
+          path="signup"
+          element={<Register setLoggedIn={setLoggedIn} loggedIn={loggedIn} />}
+        />
         {userData && (
           <Route
             path="profile"
@@ -125,7 +128,7 @@ function App() {
         />
       )}
 
-      <Analytics />
+      {/* <Analytics /> */}
     </BrowserRouter>
   );
 }
