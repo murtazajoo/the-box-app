@@ -19,6 +19,11 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
   const [showComments, setShowComments] = useState({ status: false, id: 0 });
+  //state which remembers croll position
+  const [homeScrollPosition, setHomeScrollPosition] = useState(0);
+  const [profileScrollPosition, setProfileScrollPosition] = useState(0);
+
+  const [posts, setPosts] = useState([]);
 
   const cookies = new Cookies();
 
@@ -93,6 +98,10 @@ function App() {
               userData={userData}
               loggedIn={loggedIn}
               supabase={supabase}
+              posts={posts}
+              setPosts={setPosts}
+              setScrollPosition={setHomeScrollPosition}
+              scrollPosition={homeScrollPosition}
               setShowComments={setShowComments}
             />
           }
@@ -103,17 +112,21 @@ function App() {
           element={<Register setLoggedIn={setLoggedIn} loggedIn={loggedIn} />}
         />
         {userData && (
-          <Route
-            path="profile"
-            element={
-              <Profile
-                userData={userData}
-                supabase={supabase}
-                setUserData={setUserData}
-                setShowComments={setShowComments}
-              />
-            }
-          />
+          <Route path="profile/*" end>
+            <Route
+              path=":username"
+              element={
+                <Profile
+                  userData={userData}
+                  supabase={supabase}
+                  setUserData={setUserData}
+                  setShowComments={setShowComments}
+                  setScrollPosition={setProfileScrollPosition}
+                  scrollPosition={profileScrollPosition}
+                />
+              }
+            />
+          </Route>
         )}
 
         <Route path="*" element={<h1>404 Not Found</h1>} />

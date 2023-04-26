@@ -80,11 +80,9 @@ export default function Navbar({ active, loggedIn }) {
                       placement="bottom"
                     >
                       <NavLink
-                        className={`nav-link ${
-                          active === "home" && "active-nav"
-                        } `}
+                        className={`nav-link`}
                         aria-current="page"
-                        to="../"
+                        to="/"
                       >
                         <FiHome className="nav-link-icon" size={25} />
                         <span className={`nav-icon-label `}>Home</span>
@@ -98,12 +96,7 @@ export default function Navbar({ active, loggedIn }) {
                       overlay={(props) => <Tooltip {...props}>Explore</Tooltip>}
                       placement="bottom"
                     >
-                      <NavLink
-                        className={`nav-link ${
-                          active === "explore" && "active-nav"
-                        } `}
-                        href="./"
-                      >
+                      <NavLink className={`nav-link `} to={"../explore"}>
                         <FiCompass className="nav-link-icon" size={25} />
                         <span className="nav-icon-label">Explore</span>
                       </NavLink>
@@ -117,12 +110,7 @@ export default function Navbar({ active, loggedIn }) {
                       )}
                       placement="bottom"
                     >
-                      <NavLink
-                        className={`nav-link ${
-                          active === "notification" && "active-nav"
-                        } `}
-                        href="./"
-                      >
+                      <NavLink className={`nav-link `} to="../notification">
                         <FiBell className="nav-link-icon" size={25} />
                         <span className="nav-icon-label">Notification</span>
                       </NavLink>
@@ -136,12 +124,7 @@ export default function Navbar({ active, loggedIn }) {
                       )}
                       placement="bottom"
                     >
-                      <NavLink
-                        className={`nav-link ${
-                          active === "messages" && "active-nav"
-                        } `}
-                        href="./"
-                      >
+                      <NavLink className={`nav-link  `} to={"../messages"}>
                         <FiMail className="nav-link-icon" size={25} />
                         <span className="nav-icon-label">Messages</span>
                       </NavLink>
@@ -154,10 +137,9 @@ export default function Navbar({ active, loggedIn }) {
                       placement="bottom"
                     >
                       <NavLink
-                        className={`nav-link ${
-                          active === "profile" && "active-nav"
-                        } `}
-                        to="../profile"
+                        state={{ user_id: cookie.get("user_id") }}
+                        className={`nav-link `}
+                        to="/profile/me"
                       >
                         <FiUser className="nav-link-icon" size={25} />
                         <span className="nav-icon-label">Profile</span>
@@ -188,7 +170,7 @@ export default function Navbar({ active, loggedIn }) {
               )}
               {loggedIn && (
                 <p className="menu-icon" onClick={toggleMenu}>
-                  <TbGridDots size={30} />
+                  <TbGridDots size={30} className="menu-icon-icon" />
                 </p>
               )}
             </div>

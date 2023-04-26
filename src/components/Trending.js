@@ -4,7 +4,13 @@ import { BiDotsHorizontalRounded } from "react-icons/bi";
 export default function Trending() {
   return (
     <div className="trending-section">
-      <h4>Trend For You</h4>
+      <p className="text-center my-3">An Image 👼</p>
+      <img
+        src="https://source.unsplash.com/random/?qoute"
+        className="img-fluid"
+        alt="dummy"
+      />
+      {/* <h4>Trend For You</h4>
       <h6 className="text-muted mb-2 border-bottom pb-4">Trending In India</h6>
       <div className="trend my-2">
         <p className="trend-title m-0">
@@ -56,7 +62,7 @@ export default function Trending() {
           <small className="trend-tweets text-muted ">1.2M Tweets</small>
         </p>
         <BiDotsHorizontalRounded />
-      </div>
+      </div> */}
     </div>
   );
 }

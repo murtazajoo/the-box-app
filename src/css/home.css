@@ -20,6 +20,9 @@
   color: var(--text-primary);
   border-radius: var(--radius);
   background-color: var(--primary);
+  /* border: 1px solid var(--text-primary) !important; */
+  position: sticky !important;
+
 }
 @media (max-width: 1000px) {
   .home-card-mobile {
@@ -80,6 +83,8 @@
   color: var(--text-primary);
   padding: 20px 30px;
   gap: 10px;
+  /* border: 1px solid var(--text-primary) !important; */
+
 }
 .trend {
   display: -webkit-box;
@@ -91,6 +96,7 @@
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
+
 }
 
 /*   PATH ../components/AddTweet.js  */
@@ -105,6 +111,8 @@
   display: -ms-flexbox;
   display: flex;
   width: 100%;
+  /* border: 1px solid var(--text-primary) !important; */
+
 }
 
 .add-tweet-holder img {
@@ -212,7 +220,8 @@
   color: var(--text-primary);
   border-radius: var(--radius);
   padding: 20px;
-  margin: 15px auto;
+  margin: 0 auto 15px auto;
+  /* border: 1px solid var(--text-primary) !important; */
 }
 .tweet-text {
   white-space: pre-wrap;

@@ -1,19 +1,41 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Tweet from "../components/Tweet";
+import { useLocation, useParams } from "react-router-dom";
+import { unmountComponentAtNode } from "react-dom";
 
 export default function Profile({
-  userData,
   supabase,
   setShowComments,
-  setUserData,
+  userData,
+  setScrollPosition,
 }) {
+  let { username } = useParams();
+
+  const location = useLocation();
+  const [user, setUser] = useState(null);
+  const [admin, setAdmin] = useState(false);
+
   const [posts, setPosts] = useState(null);
-  const [saved, setSaved] = useState(null);
   const [showSaved, setShowSaved] = useState(false);
 
+  async function getUser(u = username === "me" ? userData.username : username) {
+    let { data: users, error } = await supabase
+      .from("user")
+      .select("*")
+      .eq("username", u);
+
+    if (error) {
+      console.log(error);
+    } else {
+      setUser(users[0]);
+    }
+  }
+
   useEffect(() => {
-    setShowSaved(false);
+    if (username && userData) {
+      getUser();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -22,7 +44,7 @@ export default function Profile({
       let { data: userPosts, error } = await supabase
         .from("posts")
         .select("*")
-        .eq("user_id", userData.user_id)
+        .eq("username", username === "me" ? userData.username : username)
         .order("created_at", { ascending: false });
       if (userPosts) {
         setPosts(userPosts);
@@ -32,7 +54,7 @@ export default function Profile({
       console.log(userPosts, "user");
     }
     async function getSaved() {
-      let saved = userData.saved;
+      let saved = user.saved;
       let { data: savedPosts, error } = await supabase
         .from("posts")
         .select("*")
@@ -49,37 +71,37 @@ export default function Profile({
 
     const f = async () => {
       setPosts(null);
-      async function getuser() {
-        let { data: users } = await supabase
-          .from("user")
-          .select("*")
-          .eq("user_id", userData.user_id);
-        setUserData(users[0]);
-      }
-
-      await getuser();
-      if (showSaved) {
-        await getSaved();
-      } else {
-        await getPosts();
-      }
+      await getUser(username === "me" ? userData.username : username);
+      showSaved ? await getSaved() : await getPosts();
     };
-    f();
-  }, [showSaved]);
+    if (username && userData) {
+      if (username === "me" || username === userData.username) {
+        setAdmin(true);
+      } else {
+        setAdmin(false);
+        setShowSaved(false);
+      }
+      f();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showSaved, username]);
 
-  let { name, username, profile } = userData;
   return (
     <>
       <Navbar active="profile" loggedIn={true} />
-      {userData && (
-        <div className="container mt-5 mx-auto mx-1 w-100">
+      {user && userData && (
+        <div className="container text mt-5 mx-auto mx-1 w-100">
           <div className="row">
             <div className="col-12 col-md-6 col-lg-6">
               <div className="d-flex  justify-content-center-align-items-center">
-                <img className="rounded-pill" src={profile} alt="profile" />
+                <img
+                  className="rounded-pill"
+                  src={user.profile}
+                  alt="profile"
+                />
                 <div className="mx-3">
-                  <h4 className="m-0">{name}</h4>
-                  <small>@{username}</small>
+                  <h4 className="m-0">{user.name}</h4>
+                  <small>@{user.username}</small>
                 </div>
               </div>
               <p className="bio text-muted my-4">
@@ -91,35 +113,38 @@ export default function Profile({
             </div>
             <div className="col-12 col-md-6 col-lg-6">
               <div>
-                <div className="d-flex justify-content-start align-items-center">
+                <div className="d-flex mb-3 justify-content-start align-items-center">
                   <button
                     onClick={() => {
                       setShowSaved(false);
                     }}
-                    className={`btn rounded-0 ${!showSaved && "btn-dark"}`}
+                    className={`btn text rounded-0 ${!showSaved && "bg-text"}`}
                   >
                     Drops
                   </button>
-                  <button
-                    onClick={() => {
-                      setShowSaved(true);
-                    }}
-                    className={`btn rounded-0 ${showSaved && "btn-dark"}`}
-                  >
-                    Saved
-                  </button>
+                  {admin && (
+                    <button
+                      onClick={() => {
+                        setShowSaved(true);
+                      }}
+                      className={`btn text rounded-0 ${showSaved && "bg-text"}`}
+                    >
+                      Saved
+                    </button>
+                  )}
                 </div>
 
                 <div>
-                  {posts && userData ? (
+                  {posts && user ? (
                     posts && posts.length > 0 ? (
                       posts.map((post) => {
                         return (
                           <Tweet
                             supabase={supabase}
                             post={post}
-                            userData={userData}
+                            userData={user}
                             loggedIn={true}
+                            setScrollPosition={setScrollPosition}
                             key={post.id}
                             setShowComments={setShowComments}
                           />

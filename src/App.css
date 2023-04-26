@@ -6,11 +6,27 @@
 */
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Major+Mono+Display&display=swap");
+*,body{
+  scroll-behavior: auto !important;
+}
+
 body {
   margin: 5px 20px !important ;
   background-color: var(--bodg-bg) !important;
   font-family: var(--font-inter) !important;
   scroll-behavior: auto !important;
+  padding-top: 60px;
+}
+
+body .main-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background-color: var(--bodg-bg);
+  z-index: 999;
+  /* border-bottom: 1px solid var(--text-primary); */
 }
 
 body::-webkit-scrollbar {
@@ -85,6 +101,14 @@ a {
  --font-logo: "Major Mono Display", monospace; 
 } */
 
+.text{
+  color: var(--secondary) !important;
+}
+
+.bg-text{
+  background-color: var(--primary) !important;
+}
+
 .tweet-icon-inside {
   color: var(--text-primary);
 }
@@ -151,7 +175,7 @@ input {
   color: var(--text-primary) !important;
 }
 
-.active-nav {
+.active {
   background-color: var(--primary) !important;
   color: #fff !important;
   border-radius: var(--radius);
@@ -189,6 +213,13 @@ main {
   grid-auto-rows: auto !important;
   grid-gap: 20px;
   padding: 20px;
+}
+
+@media(min-width:1500px){
+  main {
+    -ms-grid-columns: 1.5fr 20px minmax(auto, 950px) 20px 1.7fr;
+    grid-template-columns: 1.5fr minmax(auto, 950px) 1.7fr;
+  }
 }
 
 .menu-icon {
@@ -301,7 +332,7 @@ main {
     width: 100%;
     height: 1px;
   }
-  .active-nav {
+  .active {
     background-color: var(--primary) !important;
     color: var(--text-primary) !important;
     letter-spacing: 2px;
@@ -335,6 +366,10 @@ main {
     position: absolute;
     top: 15px;
     right: 15px;
+  }
+  .menu-icon-icon{
+    color: var(--text-primary);
+    font-size: 30px;
   }
   .search-box {
     border: 1px solid var(--text-primary);

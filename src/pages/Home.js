@@ -13,9 +13,12 @@ export default function Home({
   loggedIn,
   userData,
   supabase,
+  posts,
+  setPosts,
+  setScrollPosition,
+  scrollPosition,
   setShowComments,
 }) {
-  const [posts, setPosts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
 
   // gets posts from supabase and sets it to state
@@ -41,10 +44,17 @@ export default function Home({
   }
   // runs getPosts on page load
   useEffect(() => {
-    getPosts();
-    return () => {
-      setPosts([]);
-    };
+    //updte scrool position
+    window.scrollTo({
+      top: scrollPosition,
+      behavior: "auto",
+    });
+
+    if (!posts || posts.length <= 0) {
+      getPosts();
+      return;
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -131,6 +141,7 @@ export default function Home({
                   <Tweet
                     supabase={supabase}
                     post={post}
+                    setScrollPosition={setScrollPosition}
                     userData={
                       loggedIn && userData
                         ? userData

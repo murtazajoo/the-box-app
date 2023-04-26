@@ -1,7 +1,14 @@
 import { createClient } from "@supabase/supabase-js";
 import React, { useState } from "react";
 import { FaHeart, FaCommentAlt, FaBookmark } from "react-icons/fa";
-export default function Tweet({ post, loggedIn, setShowComments, userData }) {
+import { NavLink } from "react-router-dom";
+export default function Tweet({
+  post,
+  loggedIn,
+  setShowComments,
+  userData,
+  setScrollPosition,
+}) {
   const supabase = createClient(
     "https://xmeyiduceoxfvciwoajn.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZXlpZHVjZW94ZnZjaXdvYWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODA1MzkzMDcsImV4cCI6MTk5NjExNTMwN30.euNOxeyYsUh6cegLmddHuVjFwU2l28IWZzPzyJ4lTRU"
@@ -137,13 +144,21 @@ export default function Tweet({ post, loggedIn, setShowComments, userData }) {
   }
 
   return (
-    <div className="tweet">
+    <div className="tweet ">
       <div className="tweet-user">
         <img src={profile} alt="user-profile" width={50} height={50} />
-        <div className="tweet-user-info">
-          <p className="m-0">
+        <div
+          className="tweet-user-info"
+          onClick={() => {
+            setScrollPosition(window.scrollY);
+          }}
+        >
+          <NavLink
+            to={`/profile/${username}`}
+            className="m-0 d-block text text-decoration-none border-0"
+          >
             {name} <small className="text-muted">@{username}</small>
-          </p>
+          </NavLink>
           <small className="text-muted">{created_atDiff(created_at)}</small>
         </div>
       </div>
