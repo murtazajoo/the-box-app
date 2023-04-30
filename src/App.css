@@ -218,8 +218,8 @@ main {
 
 @media (min-width: 1500px) {
   main {
-    -ms-grid-columns: 1.5fr 20px minmax(auto, 950px) 20px 1.7fr;
-    grid-template-columns: 1.5fr minmax(auto, 950px) 1.7fr;
+    -ms-grid-columns: 1.5fr 20px minmax(auto, 750px) 20px 1.7fr;
+    grid-template-columns: 1.5fr minmax(auto, 750px) 1.7fr;
   }
 }
 

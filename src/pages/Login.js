@@ -46,6 +46,7 @@ export default function Login({ setLoggedIn }) {
       setLoggedIn(true);
       toast.success("Login Successful", {
         position: toast.POSITION.TOP_RIGHT,
+        autoClose: 700,
       });
       navigate("../");
     }

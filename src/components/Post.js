@@ -234,7 +234,7 @@ export default function Post({
           {post ? (
             <>
               <Tweet
-                userData={userData}
+                user={userData}
                 post={post}
                 loggedIn={false}
                 key={post.id}

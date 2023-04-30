@@ -6,11 +6,6 @@ import { Link } from "react-router-dom";
 export default function PasswordReset() {
   const [password, setPassword] = useState("");
   const [changed, setChanged] = useState(false);
-  const [hash, setHash] = useState();
-  useEffect(() => {
-    const hash = window.location.hash;
-    setHash(hash);
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -1,0 +1,7 @@
+.edit-form {
+}
+@media (max-width: 768px) {
+  .edit-form {
+    min-height: 100vh;
+  }
+}

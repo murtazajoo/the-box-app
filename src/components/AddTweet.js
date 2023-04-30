@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { BsBoxArrowInDown } from "react-icons/bs";
 import { toast } from "react-toastify";
+import Cookies from "universal-cookie";
+
 export default function AddTweet(props) {
   const supabase = props.supabase;
-  const [alert, setAlert] = useState({ status: false, message: "" });
   const [formData, setFormData] = useState({ text: "" });
-
+  const cookie = new Cookies();
   // function to handle input change and update the state
   const handleInputChange = (event) => {
     setFormData({
@@ -21,7 +22,7 @@ export default function AddTweet(props) {
     if (formData.text === "") return;
     let postData = {
       ...formData,
-      user_id: props.user.user_id,
+      user_id: cookie.get("user_id"),
       name: props.user.name,
       profile: props.user.profile,
       username: props.user.username,
@@ -37,6 +38,7 @@ export default function AddTweet(props) {
     } else {
       toast.success("Post added successfully", {
         position: toast.POSITION.TOP_CENTER,
+        autoClose: 700,
       });
       props.getPosts(true);
       setFormData({ text: "" });

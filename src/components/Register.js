@@ -10,69 +10,10 @@ import { useFormik } from "formik";
 
 import { createClient } from "@supabase/supabase-js";
 import Cookies from "universal-cookie";
+import { toast } from "react-toastify";
+import validate from "../assets/validate";
 
-const validate = async (values) => {
-  const supabase = createClient(
-    "https://xmeyiduceoxfvciwoajn.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZXlpZHVjZW94ZnZjaXdvYWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODA1MzkzMDcsImV4cCI6MTk5NjExNTMwN30.euNOxeyYsUh6cegLmddHuVjFwU2l28IWZzPzyJ4lTRU"
-  );
-
-  const errors = {};
-
-  if (!values.username) {
-    errors.username = "Required";
-  } else if (values.username.length > 15) {
-    errors.username = "Must be 15 characters or less";
-  } else {
-    let { data: user, error } = await supabase
-      .from("user")
-      .select("*")
-      .eq("username", values.username);
-    if (user.length !== 0 && user[0].username === values.username) {
-      errors.username = "username not avaiable";
-    }
-
-    if (error) {
-      console.error(error);
-    }
-  }
-  if (!values.name) {
-    errors.name = "Required";
-  } else if (values.name.length > 15) {
-    errors.name = "Must be 15 characters or less";
-  }
-
-  if (!values.email) {
-    errors.email = "Required";
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-    errors.email = "Invalid email address";
-  } else {
-    let { data: user, error } = await supabase
-      .from("user")
-      .select("*")
-      .eq("email", values.email);
-    if (user.length !== 0 && user[0].email === values.email) {
-      errors.email = "email not avaiable";
-    }
-    if (error) {
-      console.error(error);
-    }
-  }
-
-  if (!values.password) {
-    errors.password = "Required";
-  } else if (values.password.length < 8) {
-    errors.password = "Must be at least 8 characters long";
-  } else if (!/[!@#$%^&*]/.test(values.password)) {
-    errors.password = "Must contain at least one special character (!@#$%^&*)";
-  } else if (!/[a-zA-Z0-9]/.test(values.password)) {
-    errors.password = "Must contain at least one alphanumeric character";
-  }
-
-  return errors;
-};
-
-export default function Register(setLoggedIn, loggedIn) {
+export default function Register(setLoggedIn) {
   const supabase = createClient(
     "https://xmeyiduceoxfvciwoajn.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZXlpZHVjZW94ZnZjaXdvYWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODA1MzkzMDcsImV4cCI6MTk5NjExNTMwN30.euNOxeyYsUh6cegLmddHuVjFwU2l28IWZzPzyJ4lTRU"
@@ -85,37 +26,81 @@ export default function Register(setLoggedIn, loggedIn) {
       name: "",
       email: "",
       password: "",
+      bio: "Hey there! I am using Mora Social Media App",
     },
     validate,
     onSubmit: async (values) => {
-      let userinfo = JSON.parse(JSON.stringify(values, null, 2));
-      let { data, error } = await supabase.auth.signUp({
-        email: userinfo.email,
-        password: userinfo.password,
-      });
-      if (data) {
-        userinfo["user_id"] = data.user.id;
-        let name = userinfo.name;
-        name.replace(" ", "+");
-        userinfo["profile"] =
-          "https://ui-avatars.com/api/?name=" + name + "&background=random";
-        const { userdata, usererror } = await supabase
-          .from("user")
-          .insert([userinfo]);
+      try {
+        toast.info("Signing Up...", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+          autoClose: 2000,
+        });
+        let { err } = await supabase.auth.signOut();
+        let userinfo = JSON.parse(JSON.stringify(values, null, 2));
+        let { data, error } = await supabase.auth.signUp({
+          email: userinfo.email,
+          password: userinfo.password,
+          options: {
+            data: {
+              username: userinfo.username.trim(),
+              name: userinfo.name.trim(),
+              profile:
+                "https://ui-avatars.com/api/?name=" +
+                userinfo.name +
+                "&background=random",
+              banner:
+                "https://ui-avatars.com/api/?name=" +
+                userinfo.name +
+                "&background=random",
+              bio: userinfo.bio,
+              saved: [],
+              followers: [],
+              following: [],
+            },
+          },
+        });
 
-        if (usererror) {
-          console.log(usererror, userdata, "signup 74");
+        if (data) {
+          let user = {
+            ...data.user.user_metadata,
+            user_id: data.user.id,
+            email: data.user.email,
+          };
+
+          const { userdata, usererror } = await supabase
+            .from("user")
+            .insert([user]);
+
+          toast.success("Signed Up Successfully", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+            autoClose: false,
+          });
+          const cookies = new Cookies();
+          cookies.set("user_id", data.user.id, { path: "/" });
+          cookies.set("access_token", data.session.access_token, { path: "/" });
+          //   // need to fix this
+          window.location = "../";
+
+          if (error || usererror) {
+            toast.error("Something Went Wrong", {
+              position: toast.POSITION.BOTTOM_RIGHT,
+              autoClose: 2000,
+            });
+            throw (err = error || usererror);
+          }
+        } else if (err) {
+          toast.error("Make Sure You are logged Out Before trying to signup", {
+            position: toast.POSITION.BOTTOM_RIGHT,
+            autoClose: false,
+          });
+          throw err;
         }
-
-        const cookies = new Cookies();
-        cookies.set("user_id", userinfo["user_id"], { path: "/" });
-        // setLoggedIn(true);
-        cookies.set("access_token", data.session.access_token, { path: "/" });
-        console.log("redirecting......");
-        // need to fix this
-        window.location = "../";
-      } else {
-        console.log(error, "signup 75");
+      } catch (err) {
+        toast.error("Something Went Wrong", {
+          position: toast.POSITION.BOTTOM_RIGHT,
+          autoClose: 2000,
+        });
+        console.log(err);
       }
     },
   });

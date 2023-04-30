@@ -5,7 +5,6 @@ import Trending from "../components/Trending";
 import Tweet from "../components/Tweet";
 import "../css/home.css";
 import LoginCard from "../components/LoginCard";
-import Navbar from "../components/Navbar";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { BsFillBookmarkCheckFill } from "react-icons/bs";
 
@@ -140,11 +139,7 @@ export default function Home({
                     supabase={supabase}
                     post={post}
                     setScrollPosition={setScrollPosition}
-                    userData={
-                      loggedIn && userData
-                        ? userData
-                        : { user_id: "", saved: [] }
-                    }
+                    user={loggedIn && userData ? userData : { saved: [] }}
                     loggedIn={loggedIn}
                     key={post.id}
                     setShowComments={setShowComments}

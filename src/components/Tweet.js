@@ -1,20 +1,18 @@
 import { createClient } from "@supabase/supabase-js";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaHeart, FaCommentAlt, FaBookmark } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
+import Cookies from "universal-cookie";
+import supabase from "../assets/supabase";
 export default function Tweet({
   post,
   loggedIn,
   setShowComments,
-  userData,
+  user,
   setScrollPosition,
 }) {
-  const supabase = createClient(
-    "https://xmeyiduceoxfvciwoajn.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZXlpZHVjZW94ZnZjaXdvYWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODA1MzkzMDcsImV4cCI6MTk5NjExNTMwN30.euNOxeyYsUh6cegLmddHuVjFwU2l28IWZzPzyJ4lTRU"
-  );
-
-  let { user_id, saved } = userData;
+  const cookies = new Cookies();
+  const user_id = cookies.get("user_id");
   let {
     id,
     name,
@@ -26,6 +24,7 @@ export default function Tweet({
     liked_by,
     comments,
   } = post;
+  const [userData, setUserData] = useState(user);
 
   function created_atDiff(dateStr) {
     const date = new Date(dateStr);
@@ -61,14 +60,14 @@ export default function Tweet({
       .eq("id", id);
 
     if (error) {
-      console.log(error, "Tweet.js on line 64");
+      console.log(error, " on line 63");
     } else {
       likes = posts[0].likes;
       liked_by = posts[0].liked_by;
     }
   }
 
-  const [likesCount, setlikesCount] = useState(likes);
+  const [likesCount, setLikesCount] = useState(likes);
   const [liked, setLiked] = useState(liked_by.includes(user_id));
 
   // update likes in supabase database
@@ -83,6 +82,17 @@ export default function Tweet({
     }
   }
 
+  async function getuser() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    setUserData(user.user_metadata);
+  }
+
+  useEffect(() => {
+    const f = async () => await getuser();
+    f();
+  }, []);
   // like tweet
   async function updateLikes() {
     await getPost();
@@ -93,7 +103,7 @@ export default function Tweet({
     if (liked_by.includes(user_id)) {
       setLiked(false);
       newLikesCount = likes - 1;
-      setlikesCount(newLikesCount);
+      setLikesCount(newLikesCount);
       tweet.classList.remove("liked");
       likedBy.splice(likedBy.indexOf(user_id), 1);
       updateLikesInDatabase(id, newLikesCount, [...likedBy]);
@@ -101,46 +111,41 @@ export default function Tweet({
       setLiked(true);
       tweet.classList.add("liked");
       newLikesCount = likes + 1;
-      setlikesCount(newLikesCount);
+      setLikesCount(newLikesCount);
       updateLikesInDatabase(id, newLikesCount, [...likedBy, user_id]);
     }
   }
 
   // save tweet
+  const [isSaved, setIsSaved] = useState(
+    userData.saved.includes(id.toString())
+  );
   async function updatesaved() {
     const tweet = document.getElementById("save" + id);
-    let userSaved = saved;
-    async function getuser() {
-      let { data: users } = await supabase
-        .from("user")
-        .select("*")
-        .eq("user_id", user_id);
-      userSaved = users[0].saved;
-    }
-
+    // get saved from supabase database
     await getuser();
-
-    let toSave = [...userSaved];
-    console.log(userSaved);
-    if (!userSaved.includes(id.toString())) {
+    let saved = userData.saved;
+    let toSave = [...saved];
+    if (!isSaved) {
       tweet.classList.add("saved");
-      toSave = [...userSaved, id.toString()];
+      setIsSaved(true);
+      toSave = [...saved, id.toString()];
     } else {
+      setIsSaved(false);
       tweet.classList.remove("saved");
-      toSave.splice(userSaved.indexOf(id.toString()), 1);
+      toSave.splice(saved.indexOf(id.toString()), 1);
     }
-
-    async function updateSavedInDatabase() {
-      const { data, error } = await supabase
-        .from("user")
-        .update({ saved: toSave })
-        .eq("user_id", user_id);
-
-      if (error) {
-        console.error(error, data);
-      }
+    // update saved in supabase database
+    const { data, error } = await supabase.auth.updateUser({
+      data: { saved: toSave },
+    });
+    const { userdata, usererror } = await supabase
+      .from("user")
+      .update({ saved: toSave })
+      .eq("user_id", user_id);
+    if (error) {
+      console.error(error, data);
     }
-    updateSavedInDatabase();
   }
 
   return (
@@ -210,9 +215,7 @@ export default function Tweet({
             </div>
             <div
               id={"save" + id}
-              className={`tweet-icon  center-flex ${
-                saved.includes(id.toString()) ? "saved" : ""
-              } `}
+              className={`tweet-icon  center-flex ${isSaved ? "saved" : ""} `}
               onClick={() => {
                 updatesaved();
               }}

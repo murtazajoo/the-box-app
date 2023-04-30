@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Tweet from "../components/Tweet";
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 
 export default function Profile({
   supabase,
@@ -85,6 +85,13 @@ export default function Profile({
         <div className="container text mt-5 mx-auto mx-1 w-100">
           <div className="row">
             <div className="col-12 col-md-6 col-lg-6">
+              {admin && (
+                <NavLink to="/profile/edit">
+                  <button className="btn my-3 btn-outline-primary rounded-pill">
+                    Edit Profile
+                  </button>
+                </NavLink>
+              )}
               <div className="d-flex  justify-content-center-align-items-center">
                 <img
                   className="rounded-pill"
@@ -98,9 +105,7 @@ export default function Profile({
               </div>
               <p className="bio text-muted my-4">
                 <small>bio</small> <br />
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Quisquam quod, voluptate, quia, voluptas quas voluptates
-                quibusdam
+                {user.bio}
               </p>
             </div>
             <div className="col-12 col-md-6 col-lg-6">
@@ -134,7 +139,7 @@ export default function Profile({
                           <Tweet
                             supabase={supabase}
                             post={post}
-                            userData={user}
+                            user={user}
                             loggedIn={true}
                             setScrollPosition={setScrollPosition}
                             key={post.id}

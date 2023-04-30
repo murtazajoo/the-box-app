@@ -15,13 +15,14 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import ForgotPassword from "./pages/ForgotPassword";
 import PasswordReset from "./pages/PasswordReset";
+import EditProfile from "./pages/EditProfile";
 function App() {
   // supabase client
   const supabase = createClient(
     "https://xmeyiduceoxfvciwoajn.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZXlpZHVjZW94ZnZjaXdvYWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODA1MzkzMDcsImV4cCI6MTk5NjExNTMwN30.euNOxeyYsUh6cegLmddHuVjFwU2l28IWZzPzyJ4lTRU"
   );
-
+  const [user, setUser] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
   const [showComments, setShowComments] = useState({ status: false, id: 0 });
@@ -47,22 +48,29 @@ function App() {
   useEffect(() => {
     // an function which gets user data from supabase and sets it to state  also sets loggedIn state
     async function getUser() {
-      let { data: user } = await supabase
-        .from("user")
-        .select("*")
-        .eq("user_id", cookies.get("user_id"));
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      console.log(user, "fuser");
+
+      // let { data: user } = await supabase
+      //   .from("user")
+      //   .select("*")
+      //   .eq("user_id", cookies.get("user_id"));
 
       if (user) {
-        setUserData(user[0]);
+        setUserData(user.user_metadata);
+        setUser(user);
+        cookies.set("user_id", user.id, { path: "/" });
         return;
       } else {
         setLoggedIn(false);
       }
     }
 
-    if (loggedIn) {
-      getUser();
-    }
+    // if (loggedIn) {
+    getUser();
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn]);
 
@@ -134,6 +142,7 @@ function App() {
                   />
                 }
               />
+              <Route path="edit" element={<EditProfile userData={user} />} />
             </Route>
           )}
           <Route path="/forgot-password" element={<ForgotPassword />} />
