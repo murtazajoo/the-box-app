@@ -9,6 +9,12 @@ import { createClient } from "@supabase/supabase-js";
 import Post from "./components/Post";
 import Profile from "./pages/Profile";
 import { Analytics } from "@vercel/analytics/react";
+import Navbar from "./components/Navbar";
+import AnimationLayout from "./components/AnimateRoute";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import ForgotPassword from "./pages/ForgotPassword";
+import PasswordReset from "./pages/PasswordReset";
 function App() {
   // supabase client
   const supabase = createClient(
@@ -90,46 +96,51 @@ function App() {
 
   return (
     <BrowserRouter>
+      <Navbar loggedIn={loggedIn} />
       <Routes>
-        <Route
-          path="/"
-          element={
-            <Home
-              userData={userData}
-              loggedIn={loggedIn}
-              supabase={supabase}
-              posts={posts}
-              setPosts={setPosts}
-              setScrollPosition={setHomeScrollPosition}
-              scrollPosition={homeScrollPosition}
-              setShowComments={setShowComments}
-            />
-          }
-        />
-        <Route path="login" element={<Login setLoggedIn={setLoggedIn} />} />
-        <Route
-          path="signup"
-          element={<Register setLoggedIn={setLoggedIn} loggedIn={loggedIn} />}
-        />
-        {userData && (
-          <Route path="profile/*" end>
-            <Route
-              path=":username"
-              element={
-                <Profile
-                  userData={userData}
-                  supabase={supabase}
-                  setUserData={setUserData}
-                  setShowComments={setShowComments}
-                  setScrollPosition={setProfileScrollPosition}
-                  scrollPosition={profileScrollPosition}
-                />
-              }
-            />
-          </Route>
-        )}
+        <Route element={<AnimationLayout />}>
+          <Route
+            path="/"
+            element={
+              <Home
+                userData={userData}
+                loggedIn={loggedIn}
+                supabase={supabase}
+                posts={posts}
+                setPosts={setPosts}
+                setScrollPosition={setHomeScrollPosition}
+                scrollPosition={homeScrollPosition}
+                setShowComments={setShowComments}
+              />
+            }
+          />
+          <Route path="login" element={<Login setLoggedIn={setLoggedIn} />} />
+          <Route
+            path="signup"
+            element={<Register setLoggedIn={setLoggedIn} loggedIn={loggedIn} />}
+          />
+          {userData && (
+            <Route path="profile/*" end>
+              <Route
+                path=":username"
+                element={
+                  <Profile
+                    userData={userData}
+                    supabase={supabase}
+                    setUserData={setUserData}
+                    setShowComments={setShowComments}
+                    setScrollPosition={setProfileScrollPosition}
+                    scrollPosition={profileScrollPosition}
+                  />
+                }
+              />
+            </Route>
+          )}
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/password-reset" element={<PasswordReset />} />
 
-        <Route path="*" element={<h1>404 Not Found</h1>} />
+          <Route path="*" element={<Login setLoggedIn={setLoggedIn} />} />
+        </Route>
       </Routes>
 
       {showComments.status && (
@@ -142,6 +153,7 @@ function App() {
       )}
 
       {/* <Analytics /> */}
+      <ToastContainer />
     </BrowserRouter>
   );
 }

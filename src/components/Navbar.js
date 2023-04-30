@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { FaBookmark, FaHashtag } from "react-icons/fa";
-
 import { TbGridDots } from "react-icons/tb";
 import Tooltip from "react-bootstrap/Tooltip";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
@@ -15,8 +14,9 @@ import {
 import { NavLink } from "react-router-dom";
 import Cookies from "universal-cookie";
 
-export default function Navbar({ active, loggedIn }) {
+export default function Navbar({ loggedIn }) {
   const [menuState, setmenuState] = useState("menu-state-mobile-off");
+
   let cookie = new Cookies();
   function toggleMenu() {
     if (menuState === "menu-state-mobile-off") {
@@ -26,7 +26,9 @@ export default function Navbar({ active, loggedIn }) {
       setmenuState("menu-state-mobile-off");
       document.body.style.overflow = "auto";
     }
+    document.body.style.overflowX = "hidden !important";
   }
+
   useEffect(() => {
     if (menuState === "menu-state-mobile-on") {
       document.body.style.overflow = "hidden";
@@ -42,6 +44,17 @@ export default function Navbar({ active, loggedIn }) {
       };
     } else {
       document.body.style.overflow = "auto";
+    }
+  }, [menuState]);
+
+  useEffect(() => {
+    if (menuState === "menu-state-mobile-on") {
+      document.querySelectorAll(".nav-link").forEach((link) => {
+        link.addEventListener("click", () => {
+          setmenuState("menu-state-mobile-off");
+          document.body.style.overflow = "auto";
+        });
+      });
     }
   }, [menuState]);
 

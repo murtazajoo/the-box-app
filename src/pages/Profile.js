@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
 import Tweet from "../components/Tweet";
-import { useLocation, useParams } from "react-router-dom";
-import { unmountComponentAtNode } from "react-dom";
+import { useParams } from "react-router-dom";
 
 export default function Profile({
   supabase,
@@ -12,34 +10,28 @@ export default function Profile({
 }) {
   let { username } = useParams();
 
-  const location = useLocation();
   const [user, setUser] = useState(null);
   const [admin, setAdmin] = useState(false);
 
   const [posts, setPosts] = useState(null);
   const [showSaved, setShowSaved] = useState(false);
 
-  async function getUser(u = username === "me" ? userData.username : username) {
-    let { data: users, error } = await supabase
-      .from("user")
-      .select("*")
-      .eq("username", u);
-
-    if (error) {
-      console.log(error);
-    } else {
-      setUser(users[0]);
-    }
-  }
-
   useEffect(() => {
-    if (username && userData) {
-      getUser();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    async function getUser(
+      u = username === "me" ? userData.username : username
+    ) {
+      let { data: users, error } = await supabase
+        .from("user")
+        .select("*")
+        .eq("username", u);
 
-  useEffect(() => {
+      if (error) {
+        console.log(error);
+      } else {
+        setUser(users[0]);
+      }
+    }
+
     async function getPosts() {
       let { data: userPosts, error } = await supabase
         .from("posts")
@@ -54,6 +46,7 @@ export default function Profile({
       console.log(userPosts, "user");
     }
     async function getSaved() {
+      await getUser();
       let saved = user.saved;
       let { data: savedPosts, error } = await supabase
         .from("posts")
@@ -71,7 +64,7 @@ export default function Profile({
 
     const f = async () => {
       setPosts(null);
-      await getUser(username === "me" ? userData.username : username);
+      if (!user) await getUser();
       showSaved ? await getSaved() : await getPosts();
     };
     if (username && userData) {
@@ -88,7 +81,6 @@ export default function Profile({
 
   return (
     <>
-      <Navbar active="profile" loggedIn={true} />
       {user && userData && (
         <div className="container text mt-5 mx-auto mx-1 w-100">
           <div className="row">

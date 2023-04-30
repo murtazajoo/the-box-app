@@ -10,8 +10,6 @@ import { useFormik } from "formik";
 
 import { createClient } from "@supabase/supabase-js";
 import Cookies from "universal-cookie";
-// import { useNavigate } from "react-router-dom";
-// Create a single supabase client for interacting with your database
 
 const validate = async (values) => {
   const supabase = createClient(

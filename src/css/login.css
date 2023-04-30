@@ -19,10 +19,11 @@
   width: 100%;
   margin: 0 auto;
   margin-top: 50px !important;
+  position: relative;
 }
 .signup-form form,
 .login-form form {
-  /* border-radius: var(--radius); */
+  border-radius: var(--radius);
   background-color: var(--primary) !important;
   color: var(--text-primary);
   padding-top: 100px !important;
@@ -46,7 +47,7 @@
   .login-form form,
   .signup-form form {
     margin-top: 80px !important;
-    min-height: 100vh !important;
+    min-height: calc(100vh + 80px) !important;
     max-width: 100%;
     width: 100%;
     margin-top: 0px !important;
@@ -54,6 +55,7 @@
   }
   .login-form,
   .signup-form {
+    top: 0;
     margin-top: 0px !important;
   }
   .login-form .img,

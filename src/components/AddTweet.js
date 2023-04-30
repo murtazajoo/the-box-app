@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { BsBoxArrowInDown } from "react-icons/bs";
-
+import { toast } from "react-toastify";
 export default function AddTweet(props) {
   const supabase = props.supabase;
   const [alert, setAlert] = useState({ status: false, message: "" });
@@ -31,24 +31,13 @@ export default function AddTweet(props) {
 
     if (error) {
       console.error(data, error);
-      setAlert({
-        status: true,
-        type: "error",
-        message: "An error occured while Posting, please refresh and try again",
+      toast.error("Error adding post", {
+        position: toast.POSITION.TOP_CENTER,
       });
-      setTimeout(() => {
-        setAlert({ status: false });
-      }, 3000);
     } else {
-      setAlert({
-        status: true,
-        type: "success",
-        message: "Post Uploaded Successfully",
+      toast.success("Post added successfully", {
+        position: toast.POSITION.TOP_CENTER,
       });
-      setTimeout(() => {
-        setAlert({ status: false });
-      }, 3000);
-
       props.getPosts(true);
       setFormData({ text: "" });
     }
@@ -64,19 +53,9 @@ export default function AddTweet(props) {
         height={50}
       />
       <div>
-        {alert.status && (
-          <div
-            style={{ maxWidth: "300px" }}
-            className={`alert alert-${
-              alert.type === "error" ? "danger" : "success"
-            } position-absolute top-0 mt-3 start-50  translate-middle-x alert-dismissible fade show`}
-            role="alert"
-          >
-            {alert.message}
-          </div>
-        )}
         <textarea
           rows={2}
+          maxLength={280}
           type="text"
           onChange={handleInputChange}
           name="text"

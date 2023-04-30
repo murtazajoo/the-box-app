@@ -11,6 +11,7 @@
     "@weavy/uikit-react": "^16.0.2",
     "bootstrap": "^5.2.3",
     "formik": "^2.2.9",
+    "framer-motion": "^10.12.4",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.2",
     "react-dom": "^18.2.0",
@@ -18,6 +19,7 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.10.0",
     "react-scripts": "5.0.1",
+    "react-toastify": "^9.1.2",
     "sass": "^1.60.0",
     "universal-cookie": "^4.0.4",
     "web-vitals": "^2.1.4"

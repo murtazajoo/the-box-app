@@ -11,6 +11,7 @@ import { createClient } from "@supabase/supabase-js";
 import "bootstrap";
 import Cookies from "universal-cookie";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function Login({ setLoggedIn }) {
   const supabase = createClient(
@@ -43,6 +44,9 @@ export default function Login({ setLoggedIn }) {
       cookies.set("user_id", data.user.id, { path: "/" });
       cookies.set("access_token", data.session.access_token, { path: "/" });
       setLoggedIn(true);
+      toast.success("Login Successful", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
       navigate("../");
     }
   };
@@ -75,7 +79,7 @@ export default function Login({ setLoggedIn }) {
             name="email"
             value={formData.email}
             onChange={handleInputChange}
-            class="form-control"
+            class="form-control py-2 h2"
             id="exampleInputEmail1"
             placeholder="example@mail.com"
             aria-describedby="emailHelp"
@@ -94,7 +98,7 @@ export default function Login({ setLoggedIn }) {
             value={formData.password}
             onChange={handleInputChange}
             type="password"
-            class="form-control"
+            class="form-control py-2 h2"
             id="exampleInputPassword1"
             placeholder="**********"
             required
@@ -104,11 +108,18 @@ export default function Login({ setLoggedIn }) {
         <button type="submit" class="btn btn-primary ">
           Login <BsFillArrowRightCircleFill />
         </button>
-
+        <small className="text-muted d-block  py-3 m-auto text-center w-100">
+          <Link
+            to="/forgot-password"
+            className="text-primary text-decoration-none  "
+          >
+            forgot password?
+          </Link>
+        </small>
         <div className="border-bottom border-secondary my-3 w-25 m-auto"></div>
-        <p className="text-muted  py-3 m-auto w-100">
+        <p className="text-muted  py-3 m-auto w-100 text-center">
           don't have an account?{" "}
-          <Link to="../signup" className="text-primary">
+          <Link to="../signup" className="text-primary text-decoration-none">
             Signup
           </Link>
         </p>

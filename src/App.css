@@ -6,7 +6,8 @@
 */
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Major+Mono+Display&display=swap");
-*,body{
+*,
+body {
   scroll-behavior: auto !important;
 }
 
@@ -101,11 +102,11 @@ a {
  --font-logo: "Major Mono Display", monospace; 
 } */
 
-.text{
+.text {
   color: var(--secondary) !important;
 }
 
-.bg-text{
+.bg-text {
   background-color: var(--primary) !important;
 }
 
@@ -215,7 +216,7 @@ main {
   padding: 20px;
 }
 
-@media(min-width:1500px){
+@media (min-width: 1500px) {
   main {
     -ms-grid-columns: 1.5fr 20px minmax(auto, 950px) 20px 1.7fr;
     grid-template-columns: 1.5fr minmax(auto, 950px) 1.7fr;
@@ -301,6 +302,10 @@ main {
     -ms-transform: translateX(0%);
     transform: translateX(0%);
   }
+
+  .tooltip {
+    display: none !important;
+  }
   .menu li a {
     display: -webkit-box !important;
     display: -ms-flexbox !important;
@@ -336,30 +341,7 @@ main {
     background-color: var(--primary) !important;
     color: var(--text-primary) !important;
     letter-spacing: 2px;
-    border-left: 5px solid var(--secondary);
-    border-right: 5px solid var(--secondary);
   }
-  /* .active-nav::before{
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 20px;
-    background-color: #1586dd;
-    height: 100%;
-  
-    border-radius: 10px 0px 0px 10px;
-  }
-  .active-nav::after{
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 20px;
-    background-color: #1586dd;
-    height: 100%;
-    border-radius: 0px 10px 10px 0px;
-  } */
   .menu-icon {
     display: block;
     margin: 0 auto;
@@ -367,7 +349,7 @@ main {
     top: 15px;
     right: 15px;
   }
-  .menu-icon-icon{
+  .menu-icon-icon {
     color: var(--text-primary);
     font-size: 30px;
   }
@@ -379,4 +361,10 @@ main {
   .search-box input {
     padding: 5px;
   }
+}
+
+input {
+  background-color: var(--primary) !important;
+  border: 1px solid var(--text-primary) !important;
+  position: relative;
 }

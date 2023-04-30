@@ -30,7 +30,10 @@ export default function ProfileCard({ userData }) {
         </div> */}
         <div className="my-4">
           <p>
-            <Link to="../profile" className="text-primary text-decoration-none">
+            <Link
+              to="/profile/me"
+              className="text-primary text-decoration-none"
+            >
               My Profile
             </Link>
           </p>

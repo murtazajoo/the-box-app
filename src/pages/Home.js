@@ -68,8 +68,6 @@ export default function Home({
 
   return (
     <>
-      <Navbar active={"home"} loggedIn={loggedIn} />
-
       {loading ? (
         <div className="loader">
           <div className="spinner-border  text-primary " role="status"></div>{" "}
