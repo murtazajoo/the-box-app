@@ -87,14 +87,16 @@ export default function Profile({
             <div className="col-12 col-md-6 col-lg-6">
               {admin && (
                 <NavLink to="/profile/edit">
-                  <button className="btn my-3 btn-outline-primary rounded-pill">
+                  <button className="btn mb-5 btn-outline-primary rounded-pill">
                     Edit Profile
                   </button>
                 </NavLink>
               )}
               <div className="d-flex  justify-content-center-align-items-center">
                 <img
-                  className="rounded-pill"
+                  className="rounded-pill border border-2 border-primary"
+                  width="60"
+                  height="60"
                   src={user.profile}
                   alt="profile"
                 />
@@ -117,7 +119,7 @@ export default function Profile({
                     }}
                     className={`btn text rounded-0 ${!showSaved && "bg-text"}`}
                   >
-                    Drops
+                    Drops ({posts && posts.length})
                   </button>
                   {admin && (
                     <button
@@ -126,7 +128,7 @@ export default function Profile({
                       }}
                       className={`btn text rounded-0 ${showSaved && "bg-text"}`}
                     >
-                      Saved
+                      Saved ({user.saved.length})
                     </button>
                   )}
                 </div>

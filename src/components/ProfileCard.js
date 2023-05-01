@@ -13,7 +13,13 @@ export default function ProfileCard({ userData }) {
       </p>
 
       <p className="profile-card-picture">
-        <img src={profile} alt="" />
+        <img
+          src={profile}
+          className="rounded-pill border border-2 border-primary"
+          width="100"
+          height="100"
+          alt=""
+        />
       </p>
       <div className="profile-card-body">
         <h3>{name}</h3>

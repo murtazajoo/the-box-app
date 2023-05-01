@@ -5,10 +5,8 @@ import Register from "./components/Register";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Cookies from "universal-cookie";
-import { createClient } from "@supabase/supabase-js";
 import Post from "./components/Post";
 import Profile from "./pages/Profile";
-import { Analytics } from "@vercel/analytics/react";
 import Navbar from "./components/Navbar";
 import AnimationLayout from "./components/AnimateRoute";
 import "react-toastify/dist/ReactToastify.css";
@@ -16,13 +14,12 @@ import { ToastContainer } from "react-toastify";
 import ForgotPassword from "./pages/ForgotPassword";
 import PasswordReset from "./pages/PasswordReset";
 import EditProfile from "./pages/EditProfile";
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
+
 function App() {
-  // supabase client
-  const supabase = createClient(
-    "https://xmeyiduceoxfvciwoajn.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZXlpZHVjZW94ZnZjaXdvYWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODA1MzkzMDcsImV4cCI6MTk5NjExNTMwN30.euNOxeyYsUh6cegLmddHuVjFwU2l28IWZzPzyJ4lTRU"
-  );
-  const [user, setUser] = useState(null);
+  const user = useUser();
+  const supabase = useSupabaseClient();
+
   const [loggedIn, setLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
   const [showComments, setShowComments] = useState({ status: false, id: 0 });
@@ -60,7 +57,6 @@ function App() {
 
       if (user) {
         setUserData(user.user_metadata);
-        setUser(user);
         cookies.set("user_id", user.id, { path: "/" });
         return;
       } else {
@@ -162,7 +158,7 @@ function App() {
       )}
 
       {/* <Analytics /> */}
-      <ToastContainer />
+      <ToastContainer position="top-right" />
     </BrowserRouter>
   );
 }

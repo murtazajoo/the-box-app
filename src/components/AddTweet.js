@@ -48,7 +48,7 @@ export default function AddTweet(props) {
   return (
     <form className="add-tweet-holder mb-3" onSubmit={handleSubmit}>
       <img
-        className="border"
+        className="rounded-pill border border-2 border-primary"
         src={props.user.profile}
         alt="your-profile"
         width={50}

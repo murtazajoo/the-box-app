@@ -12,20 +12,21 @@ export default function Tweet({
   setScrollPosition,
 }) {
   const cookies = new Cookies();
-  const user_id = cookies.get("user_id");
+  const c_user_id = cookies.get("user_id");
   let {
     id,
     name,
     username,
     profile,
     created_at,
+    user_id,
     text,
     likes,
     liked_by,
     comments,
   } = post;
   const [userData, setUserData] = useState(user);
-
+  const [postUser, setPostUser] = useState(null);
   function created_atDiff(dateStr) {
     const date = new Date(dateStr);
     const now = new Date();
@@ -68,7 +69,7 @@ export default function Tweet({
   }
 
   const [likesCount, setLikesCount] = useState(likes);
-  const [liked, setLiked] = useState(liked_by.includes(user_id));
+  const [liked, setLiked] = useState(liked_by.includes(c_user_id));
 
   // update likes in supabase database
   async function updateLikesInDatabase(id, likesCount, likedBy) {
@@ -92,6 +93,15 @@ export default function Tweet({
   useEffect(() => {
     const f = async () => await getuser();
     f();
+    const f2 = async () => {
+      const { data: user, error } = await supabase
+        .from("user")
+        .select("*")
+        .eq("user_id", user_id);
+      console.log(user);
+      setPostUser(user[0]);
+    };
+    f2();
   }, []);
   // like tweet
   async function updateLikes() {
@@ -100,19 +110,19 @@ export default function Tweet({
     let newLikesCount = likes;
     let likedBy = liked_by;
 
-    if (liked_by.includes(user_id)) {
+    if (liked_by.includes(c_user_id)) {
       setLiked(false);
       newLikesCount = likes - 1;
       setLikesCount(newLikesCount);
       tweet.classList.remove("liked");
-      likedBy.splice(likedBy.indexOf(user_id), 1);
+      likedBy.splice(likedBy.indexOf(c_user_id), 1);
       updateLikesInDatabase(id, newLikesCount, [...likedBy]);
     } else {
       setLiked(true);
       tweet.classList.add("liked");
       newLikesCount = likes + 1;
       setLikesCount(newLikesCount);
-      updateLikesInDatabase(id, newLikesCount, [...likedBy, user_id]);
+      updateLikesInDatabase(id, newLikesCount, [...likedBy, c_user_id]);
     }
   }
 
@@ -142,7 +152,7 @@ export default function Tweet({
     const { userdata, usererror } = await supabase
       .from("user")
       .update({ saved: toSave })
-      .eq("user_id", user_id);
+      .eq("user_id", c_user_id);
     if (error) {
       console.error(error, data);
     }
@@ -151,7 +161,14 @@ export default function Tweet({
   return (
     <div className="tweet ">
       <div className="tweet-user">
-        <img src={profile} alt="user-profile" width={50} height={50} />
+        <img
+          src={postUser ? postUser.profile : userData.profile}
+          className="rounded-pill border border-1 border-primary"
+          alt="user-profile"
+          width={50}
+          height={50}
+        />
+
         <div
           className="tweet-user-info"
           onClick={() => {
