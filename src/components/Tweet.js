@@ -159,90 +159,97 @@ export default function Tweet({
   }
 
   return (
-    <div className="tweet ">
-      <div className="tweet-user">
-        <img
-          src={postUser ? postUser.profile : userData.profile}
-          className="rounded-pill border border-1 border-primary"
-          alt="user-profile"
-          width={50}
-          height={50}
-        />
+    <>
+      {postUser && (
+        <div className="tweet ">
+          <div className="tweet-user">
+            <img
+              src={postUser.profile}
+              className="rounded-pill border border-1 border-primary"
+              alt="user-profile"
+              width={50}
+              height={50}
+            />
 
-        <div
-          className="tweet-user-info"
-          onClick={() => {
-            setScrollPosition(window.scrollY);
-          }}
-        >
-          <NavLink
-            to={`/profile/${username}`}
-            className="m-0 d-block text text-decoration-none border-0"
-          >
-            {name} <small className="text-muted">@{username}</small>
-          </NavLink>
-          <small className="text-muted">{created_atDiff(created_at)}</small>
-        </div>
-      </div>
-      <div className="tweet-body mt-3">
-        <pre className="tweet-text">{text}</pre>
-        {/* <div className="tweet-img">
+            <div
+              className="tweet-user-info"
+              onClick={() => {
+                setScrollPosition(window.scrollY);
+              }}
+            >
+              <NavLink
+                to={`/profile/${username}`}
+                className="m-0 d-block text text-decoration-none border-0"
+              >
+                {postUser.name}
+                <small className="text-muted">@{username}</small>
+              </NavLink>
+              <small className="text-muted">{created_atDiff(created_at)}</small>
+            </div>
+          </div>
+          <div className="tweet-body mt-3">
+            <pre className="tweet-text">{text}</pre>
+            {/* <div className="tweet-img">
           <img className="img-fluid" src={image} alt="" />
         </div> */}
-      </div>
-      <div className="tweet-footer mt-4 ">
-        <div className="tweet-footer-icons d-flex justify-content-between px-2">
-          <div className="tweet-footer-icon center-flex">
-            <FaHeart color="#960018" />
-            {/* <FaRetweet color="lightblue" />{" "} */}
-            <small className="text-muted">{likesCount}</small>
           </div>
-          <div className="tweet-footer-icon center-flex">
-            <small
-              className="text-muted"
-              onClick={() => {
-                if (loggedIn) {
-                  setShowComments({ status: true, id: id });
-                }
-              }}
-            >
-              {comments.length} Comments
-            </small>
+          <div className="tweet-footer mt-4 ">
+            <div className="tweet-footer-icons d-flex justify-content-between px-2">
+              <div className="tweet-footer-icon center-flex">
+                <FaHeart color="#960018" />
+                {/* <FaRetweet color="lightblue" />{" "} */}
+                <small className="text-muted">{likesCount}</small>
+              </div>
+              <div className="tweet-footer-icon center-flex">
+                <small
+                  className="text-muted"
+                  onClick={() => {
+                    if (loggedIn) {
+                      setShowComments({ status: true, id: id });
+                    }
+                  }}
+                >
+                  {comments.length} Comments
+                </small>
+              </div>
+            </div>
+            {loggedIn && (
+              <div className="tweet-footer-icons mt-4 d-flex justify-content-around px-2">
+                <div
+                  id={"like" + id}
+                  className={`tweet-icon center-flex ${liked ? "liked" : ""}`}
+                  onClick={updateLikes}
+                >
+                  <FaHeart className="tweet-icon-inside" />
+                  <small>{liked ? "" : ""}</small>
+                </div>
+
+                <div
+                  className="tweet-icon center-flex text-light  text-center"
+                  onClick={() => {
+                    setShowComments({ status: true, id: id });
+                  }}
+                >
+                  <FaCommentAlt className="tweet-icon-inside" size={15} />{" "}
+                  <small></small>
+                </div>
+                <div
+                  id={"save" + id}
+                  className={`tweet-icon  center-flex ${
+                    isSaved ? "saved" : ""
+                  } `}
+                  onClick={() => {
+                    updatesaved();
+                  }}
+                >
+                  <FaBookmark className="tweet-icon-inside" size={15} />
+                  <small></small>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-        {loggedIn && (
-          <div className="tweet-footer-icons mt-4 d-flex justify-content-around px-2">
-            <div
-              id={"like" + id}
-              className={`tweet-icon center-flex ${liked ? "liked" : ""}`}
-              onClick={updateLikes}
-            >
-              <FaHeart className="tweet-icon-inside" />
-              <small>{liked ? "" : ""}</small>
-            </div>
-
-            <div
-              className="tweet-icon center-flex text-light  text-center"
-              onClick={() => {
-                setShowComments({ status: true, id: id });
-              }}
-            >
-              <FaCommentAlt className="tweet-icon-inside" size={15} />{" "}
-              <small></small>
-            </div>
-            <div
-              id={"save" + id}
-              className={`tweet-icon  center-flex ${isSaved ? "saved" : ""} `}
-              onClick={() => {
-                updatesaved();
-              }}
-            >
-              <FaBookmark className="tweet-icon-inside" size={15} />
-              <small></small>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
+      )}
+    </>
   );
 }
