@@ -110,15 +110,26 @@ export default function App() {
 
   // this function will be used to add new post
   async function addPost(post) {
+    const toastId = toast.loading("Adding post...");
     const { data, error } = await supabase
       .from("posts")
       .insert([post])
       .select();
     if (error) {
-      toast.error(error.message);
+      toast.update(toastId, {
+        render: error.message,
+        type: toast.TYPE.ERROR,
+        isLoading: false,
+        autoClose: 2000,
+      });
     } else {
       setPosts([data[0], ...posts]);
-      toast.success("Post added");
+      toast.update(toastId, {
+        render: "Post added",
+        type: toast.TYPE.SUCCESS,
+        isLoading: false,
+        autoClose: 1000,
+      });
     }
   }
 
