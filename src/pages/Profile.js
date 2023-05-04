@@ -169,6 +169,7 @@ export default function Profile({ updateUser, deletePost }) {
                             updateUser={updateUser}
                             deletePost={deletePost}
                             getPosts={getPosts}
+                            admin={admin}
                           />
                         );
                       })

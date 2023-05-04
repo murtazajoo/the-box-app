@@ -18,6 +18,7 @@ export default function Post({
   setScrollPosition,
   deletePost,
   getPosts,
+  admin,
 }) {
   const supabase = useSupabaseClient();
   const [postUser, setPostUser] = useState([]);
@@ -186,7 +187,7 @@ export default function Post({
                 >
                   <MdCancel className="text" size={20} />
                 </button>
-                {user && user.id === post.user_id ? (
+                {admin ? (
                   <>
                     <div className="tweet-user-menu-item my-2 ">
                       <div

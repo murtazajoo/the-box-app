@@ -71,6 +71,7 @@ export default function Home({
                     setScrollPosition={setScrollPosition}
                     deletePost={deletePost}
                     getPosts={() => {}}
+                    admin={post.user_id === user?.id}
                   />
                 );
               })}
