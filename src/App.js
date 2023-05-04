@@ -203,28 +203,28 @@ export default function App() {
                 </Suspense>
               }
             />
-
-            <Route path="/profile/*">
-              <Route
-                path=":username"
-                element={
-                  <Profile
-                    updateUser={updateUser}
-                    deletePost={deletePost}
-                    user={user}
-                  />
-                }
-              />
-              <Route
-                path="edit"
-                element={
-                  <Suspense fallback={<Loader />}>
-                    <EditProfile user={user} updateUser={updateUser} />
-                  </Suspense>
-                }
-              />
-            </Route>
-
+            {loggedIn && (
+              <Route path="/profile/*">
+                <Route
+                  path=":username"
+                  element={
+                    <Profile
+                      updateUser={updateUser}
+                      deletePost={deletePost}
+                      user={user}
+                    />
+                  }
+                />
+                <Route
+                  path="edit"
+                  element={
+                    <Suspense fallback={<Loader />}>
+                      <EditProfile user={user} updateUser={updateUser} />
+                    </Suspense>
+                  }
+                />
+              </Route>
+            )}
             <Route
               path="*"
               element={
