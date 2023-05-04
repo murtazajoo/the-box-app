@@ -223,7 +223,7 @@ export default function Post({
                     </div>
                     <div className="tweet-user-menu-item my-3 ">
                       <div
-                        className="d-flex align-items-center btn border-0"
+                        className="d-flex align-items-center btn text border-0"
                         onClick={() => {
                           toast.success("Reported Successfully");
                           setShowOptions(false);
