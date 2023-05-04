@@ -12,12 +12,11 @@ import {
   FiLogOut,
 } from "react-icons/fi";
 import { NavLink } from "react-router-dom";
-import Cookies from "universal-cookie";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
 export default function Navbar({ loggedIn }) {
+  const supabase = useSupabaseClient();
   const [menuState, setmenuState] = useState("menu-state-mobile-off");
-
-  let cookie = new Cookies();
   function toggleMenu() {
     if (menuState === "menu-state-mobile-off") {
       setmenuState("menu-state-mobile-on");
@@ -27,6 +26,15 @@ export default function Navbar({ loggedIn }) {
       document.body.style.overflow = "auto";
     }
     document.body.style.overflowX = "hidden !important";
+  }
+
+  async function logout() {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      alert(error.message);
+      return;
+    }
+    window.location.href = "/";
   }
 
   useEffect(() => {
@@ -65,7 +73,7 @@ export default function Navbar({ loggedIn }) {
         className="navbar navbar-expand-lg bg-body-tertiary main-nav"
       >
         <div className="container-fluid">
-          <a className="navbar-brand center-flex" href="./">
+          <a className="navbar-brand center-flex" href="/">
             <FaBookmark color="#1da1f2" size={40} />{" "}
             <span className="logo text-muted h2">MORA</span>
           </a>
@@ -149,11 +157,7 @@ export default function Navbar({ loggedIn }) {
                       overlay={(props) => <Tooltip {...props}>Profile</Tooltip>}
                       placement="bottom"
                     >
-                      <NavLink
-                        state={{ user_id: cookie.get("user_id") }}
-                        className={`nav-link `}
-                        to="/profile/me"
-                      >
+                      <NavLink className={`nav-link `} to="/profile/me">
                         <FiUser className="nav-link-icon" size={25} />
                         <span className="nav-icon-label">Profile</span>
                       </NavLink>
@@ -163,20 +167,18 @@ export default function Navbar({ loggedIn }) {
                     <div className="divider"></div>
                   </li>
                   <li
-                    className="nav-item "
-                    onClick={() => {
-                      cookie.set("user_id", "", { path: "/" });
-                    }}
+                    className="nav-item center-flex pt-4 btn"
+                    onClick={logout}
                   >
                     <OverlayTrigger
                       delay={{ hide: 450, show: 300 }}
                       overlay={(props) => <Tooltip {...props}>LogOut</Tooltip>}
                       placement="bottom"
                     >
-                      <a href="../" className={`nav-link `}>
+                      <p className={`nav-link `}>
                         <FiLogOut className="nav-link-icon" size={15} />
-                        <span className="nav-icon-label h6">LogOut</span>
-                      </a>
+                        <small className="nav-icon-label sm">LogOut</small>
+                      </p>
                     </OverlayTrigger>
                   </li>
                 </ul>

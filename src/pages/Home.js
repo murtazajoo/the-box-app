@@ -1,118 +1,45 @@
-import React, { useEffect, useState } from "react";
-import AddTweet from "../components/AddTweet";
-import ProfileCard from "../components/ProfileCard";
-import Trending from "../components/Trending";
-import Tweet from "../components/Tweet";
-import "../css/home.css";
-import LoginCard from "../components/LoginCard";
-import InfiniteScroll from "react-infinite-scroll-component";
+import React, { useEffect } from "react";
+import ProfileCard from "../components/side_card/ProfileCard";
+import LoginCard from "../components/side_card/LoginCard";
+import Post from "../components/post/Post";
 import { BsFillBookmarkCheckFill } from "react-icons/bs";
+import InfiniteScroll from "react-infinite-scroll-component";
+import AddPost from "../components/post/AddPost";
 
 export default function Home({
   loggedIn,
-  userData,
-  supabase,
+  user,
   posts,
-  setPosts,
-  setScrollPosition,
+  updateUser,
+  addPost,
+  totalPosts,
   scrollPosition,
-  setShowComments,
+  setScrollPosition,
+  getMorePosts,
+  deletePost,
 }) {
-  const [hasMore, setHasMore] = useState(true);
-
-  // gets posts from supabase and sets it to state
-  async function getPosts(added) {
-    let from = added ? 0 : posts.length;
-    let { data: newPosts, error } = await supabase
-      .from("posts")
-      .select("*")
-      .range(from, from + 9)
-      .order("created_at", { ascending: false });
-
-    if (newPosts) {
-      if (added) {
-        setPosts(newPosts);
-      } else {
-        setPosts([...posts, ...newPosts]);
-      }
-      if (posts.length % 10 !== 0) setHasMore(false);
-      return;
-    } else {
-      console.error(error);
-    }
-  }
-  // runs getPosts on page load
   useEffect(() => {
-    //updte scrool position
     window.scrollTo({
       top: scrollPosition,
       behavior: "auto",
     });
-
-    if (!posts || posts.length <= 0) {
-      getPosts();
-      return;
-    }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // this is for the loader
-  const [loading, setloading] = useState(false);
-  useEffect(() => {
-    if (posts.length > 0) {
-      setloading(false);
-    }
-  }, [posts]);
+  const MemoPost = React.memo(Post);
 
   return (
     <>
-      {loading ? (
-        <div className="loader">
-          <div className="spinner-border  text-primary " role="status"></div>{" "}
+      <main key={"podh"}>
+        <div className="profile-holder">
+          {loggedIn && user ? <ProfileCard user={user} /> : <LoginCard />}
         </div>
-      ) : (
-        <main>
-          {/* if logged in show profile card else show login card*/}
-          <div className="profile-holder">
-            {loggedIn && userData ? (
-              <ProfileCard userData={userData} />
-            ) : (
-              <>
-                <LoginCard />
-                <div
-                  className="alert alert-warning alert-dismissible my-2"
-                  role="alert"
-                >
-                  {" "}
-                  <strong>Alert!</strong> This App is still in development.{" "}
-                  <button
-                    type="button"
-                    className="btn-close"
-                    data-bs-dismiss="alert"
-                    aria-label="Close"
-                  >
-                    {" "}
-                  </button>{" "}
-                </div>
-              </>
-            )}
-          </div>
-
+        {posts && posts.length > 0 && (
           <div className="main-holder">
-            {loggedIn && userData && (
-              <AddTweet
-                supabase={supabase}
-                user={userData}
-                getPosts={getPosts}
-                setPosts={setPosts}
-              />
-            )}
-
+            {user && loggedIn && <AddPost user={user} addPost={addPost} />}
             <InfiniteScroll
               dataLength={posts.length}
-              next={getPosts}
-              hasMore={hasMore}
+              next={getMorePosts}
+              hasMore={posts.length < totalPosts}
               loader={
                 <div className="m-auto mt-5 text-center">
                   <div className="spinner-border text-primary " role="status">
@@ -135,24 +62,23 @@ export default function Home({
             >
               {posts.map((post) => {
                 return (
-                  <Tweet
-                    supabase={supabase}
-                    post={post}
-                    setScrollPosition={setScrollPosition}
-                    user={loggedIn && userData ? userData : { saved: [] }}
-                    loggedIn={loggedIn}
+                  <MemoPost
                     key={post.id}
-                    setShowComments={setShowComments}
+                    user={user}
+                    loggedIn={loggedIn}
+                    post={post}
+                    updateUser={updateUser}
+                    setScrollPosition={setScrollPosition}
+                    deletePost={deletePost}
+                    getPosts={() => {}}
                   />
                 );
               })}
             </InfiniteScroll>
           </div>
-          <div className="trending-holder">
-            <Trending />
-          </div>
-        </main>
-      )}
+        )}
+        <div className="trending-holder"></div>
+      </main>
     </>
   );
 }

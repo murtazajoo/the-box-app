@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
-import supabase from "../assets/supabase";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
 export default function PasswordReset() {
   const [password, setPassword] = useState("");
   const [changed, setChanged] = useState(false);
+  const supabase = useSupabaseClient();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,15 +18,11 @@ export default function PasswordReset() {
       if (error) {
         throw error;
       } else if (!error) {
-        toast.success("password reset successful", {
-          position: toast.POSITION.TOP_CENTER,
-        });
+        toast.success("password reset successful");
         setChanged(true);
       }
     } catch (error) {
-      toast.error("something went wrong", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      toast.error("something went wrong");
       console.log(error);
     }
   };

@@ -3,7 +3,7 @@ import Cropper from "react-easy-crop";
 import { Button, DialogContent } from "@mui/material";
 
 import { Box, DialogActions, Slider, Typography } from "@mui/material";
-import getCroppedImg from "../assets/cropImage";
+import getCroppedImg from "./crop_image";
 import { toast } from "react-toastify";
 
 export default function Crop({ photoUrl, setOpenCrop, setprofile, setFile }) {

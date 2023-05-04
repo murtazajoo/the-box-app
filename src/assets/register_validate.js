@@ -8,8 +8,8 @@ const validate = async (values) => {
   const errors = {};
   if (!values.username) {
     errors.username = "Required";
-  } else if (values.username.length > 15) {
-    errors.username = "Must be 15 characters or less";
+  } else if (values.username.length > 10) {
+    errors.username = "Must be 10 characters or less";
   } else if (values.username.length < 5) {
     errors.username = "Must be 5 characters or more";
   } else if (/\s/.test(values.username)) {
@@ -31,10 +31,12 @@ const validate = async (values) => {
   }
   if (!values.name) {
     errors.name = "Required";
-  } else if (values.name.length > 15) {
-    errors.name = "Must be 15 characters or less";
+  } else if (values.name.length > 10) {
+    errors.name = "Must be 10 characters or less";
   } else if (values.name.length < 3) {
     errors.name = "Must be at least 3 character long";
+  } else if (/[^a-zA-Z]/.test(values.name)) {
+    errors.name = "Only letters allowed";
   }
 
   if (!values.email) {

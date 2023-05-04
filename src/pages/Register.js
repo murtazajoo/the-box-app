@@ -2,23 +2,17 @@ import React from "react";
 import {
   BsArrowLeftShort,
   BsArrowRightCircleFill,
-  BsFillBookmarkStarFill,
   BsFillExclamationTriangleFill,
 } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-
-import { createClient } from "@supabase/supabase-js";
-import Cookies from "universal-cookie";
 import { toast } from "react-toastify";
-import validate from "../assets/validate";
+import validate from "../assets/register_validate";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
-export default function Register(setLoggedIn) {
-  const supabase = createClient(
-    "https://xmeyiduceoxfvciwoajn.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZXlpZHVjZW94ZnZjaXdvYWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODA1MzkzMDcsImV4cCI6MTk5NjExNTMwN30.euNOxeyYsUh6cegLmddHuVjFwU2l28IWZzPzyJ4lTRU"
-  );
-  // const navigate = useNavigate();
+export default function Register({ setLoggedIn }) {
+  const supabase = useSupabaseClient();
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -31,10 +25,7 @@ export default function Register(setLoggedIn) {
     validate,
     onSubmit: async (values) => {
       try {
-        toast.info("Signing Up...", {
-          position: toast.POSITION.BOTTOM_RIGHT,
-          autoClose: 2000,
-        });
+        const toastId = toast.loading("Registering you...");
         let { err } = await supabase.auth.signOut();
         let userinfo = JSON.parse(JSON.stringify(values, null, 2));
         let { data, error } = await supabase.auth.signUp({
@@ -48,59 +39,48 @@ export default function Register(setLoggedIn) {
                 "https://ui-avatars.com/api/?name=" +
                 userinfo.name +
                 "&background=random",
-              banner:
-                "https://ui-avatars.com/api/?name=" +
-                userinfo.name +
-                "&background=random",
-              bio: userinfo.bio,
+              bio: userinfo.bio.trim(),
               saved: [],
-              followers: [],
-              following: [],
             },
           },
         });
-
+        toast.update(toastId, {
+          render: "Registered successfully",
+          type: "success",
+          isLoading: false,
+          autoClose: 1000,
+        });
         if (data) {
           let user = {
             ...data.user.user_metadata,
             user_id: data.user.id,
-            email: data.user.email,
           };
 
-          const { userdata, usererror } = await supabase
+          const { user_data, user_error } = await supabase
             .from("user")
             .insert([user]);
-
-          toast.success("Signed Up Successfully", {
-            position: toast.POSITION.BOTTOM_RIGHT,
-            autoClose: false,
-          });
-          const cookies = new Cookies();
-          cookies.set("user_id", data.user.id, { path: "/" });
-          cookies.set("access_token", data.session.access_token, { path: "/" });
-          //   // need to fix this
-          window.location = "../";
-
-          if (error || usererror) {
-            toast.error("Something Went Wrong", {
-              position: toast.POSITION.BOTTOM_RIGHT,
+          setLoggedIn(true);
+          if (user_error && !user_data) {
+            toast.update(toastId, {
+              render: user_error.message,
+              type: "error",
+              isLoading: false,
               autoClose: 2000,
             });
-            throw (err = error || usererror);
+            return;
           }
-        } else if (err) {
-          toast.error("Make Sure You are logged Out Before trying to signup", {
-            position: toast.POSITION.BOTTOM_RIGHT,
-            autoClose: false,
-          });
-          throw err;
+          navigate("../");
         }
-      } catch (err) {
-        toast.error("Something Went Wrong", {
-          position: toast.POSITION.BOTTOM_RIGHT,
-          autoClose: 2000,
-        });
-        console.log(err);
+        if (error || err) {
+          toast.update(toastId, {
+            render: error.message || err.message,
+            type: "error",
+            isLoading: false,
+            autoClose: 2000,
+          });
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
   });
@@ -119,11 +99,8 @@ export default function Register(setLoggedIn) {
             <BsArrowLeftShort /> Go Back
           </Link>
 
-          <p className="text-center h1 mb-4">Register </p>
-          <p className="text-center d-flex justify-content-center align-items-center">
-            <BsFillBookmarkStarFill class="text-info" size={30} />
-            <h4 className="logo">MORA</h4>{" "}
-          </p>
+          <p className="text-center h4 mb-4">Register </p>
+
           <div class="mb-3">
             <label htmlFor="username" class="form-label">
               Username
@@ -173,6 +150,7 @@ export default function Register(setLoggedIn) {
               class="form-control"
               id="exampleInputEmail1"
               aria-describedby="emailHelp"
+              style={{ textTransform: "lowercase" }}
               name="email"
               onChange={formik.handleChange}
               value={formik.values.email}
@@ -222,11 +200,11 @@ export default function Register(setLoggedIn) {
           </p>
         </form>
         <div className="img w-50">
-          <img
-            src="https://source.unsplash.com/random/1920x1080/?wallpaper,landscape,sky"
-            className="img-fluid"
-            alt=""
-          />
+          <p className="text-center d-flex justify-content-center align-items-center">
+            <h4 className="logo" style={{ fontSize: "17vw" }}>
+              MORA
+            </h4>{" "}
+          </p>
         </div>
       </div>
     </>

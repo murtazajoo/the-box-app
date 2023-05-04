@@ -11,8 +11,8 @@ export default function LoginCard() {
         <div className="border-bottom border-secondary my-3 w-25 m-auto"></div>
         <p className="text-muted text-center  py-3 px-5">
           don't have an account?{" "}
-          <Link to="./signup" className="text-info">
-            Signup
+          <Link to="./register" className="text-primary">
+            Register
           </Link>
         </p>
       </div>

@@ -1,166 +1,258 @@
 import "./App.css";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./components/Register";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { useEffect, useState } from "react";
-import Cookies from "universal-cookie";
-import Post from "./components/Post";
-import Profile from "./pages/Profile";
-import Navbar from "./components/Navbar";
-import AnimationLayout from "./components/AnimateRoute";
+import "./index.css";
+import "./css/home.css";
+import "./css/login.css";
+import "./css/profile.css";
+import "./css/post.css";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
-import ForgotPassword from "./pages/ForgotPassword";
-import PasswordReset from "./pages/PasswordReset";
-import EditProfile from "./pages/EditProfile";
-import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useEffect, useState, lazy, Suspense } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import Home from "./pages/Home";
+// import Login from "./pages/Login";
+// import Register from "./pages/Register";
+// import EditProfile from "./pages/EditProfile";
+import Profile from "./pages/Profile";
+// import NotFound from "./pages/NotFound";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import Loader from "./pages/Loader";
+import Animate from "./components/Animate";
 
-function App() {
-  const user = useUser();
+const EditProfile = lazy(() => import("./pages/EditProfile"));
+const Register = lazy(() => import("./pages/Register"));
+const Login = lazy(() => import("./pages/Login"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const PasswordReset = lazy(() => import("./pages/PasswordReset"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+
+export default function App() {
   const supabase = useSupabaseClient();
-
   const [loggedIn, setLoggedIn] = useState(false);
-  const [userData, setUserData] = useState(null);
-  const [showComments, setShowComments] = useState({ status: false, id: 0 });
-  //state which remembers croll position
-  const [homeScrollPosition, setHomeScrollPosition] = useState(0);
-  const [profileScrollPosition, setProfileScrollPosition] = useState(0);
-
+  const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [totalPosts, setTotalPosts] = useState(0);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
-  const cookies = new Cookies();
-
-  // checks if user is logged in on page load and invokes getUser function
   useEffect(() => {
-    if (cookies.get("user_id")) {
-      setLoggedIn(true);
-    } else {
-      setLoggedIn(false);
+    // this function will be used to get total number of posts
+    async function getTotalPosts() {
+      let { count, error } = await supabase
+        .from("posts")
+        .select("*", { count: "estimated" });
+      if (error) {
+        toast.error(error.message);
+      } else {
+        setTotalPosts(count);
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // if user logs in it will invoke getUser function
-  useEffect(() => {
-    // an function which gets user data from supabase and sets it to state  also sets loggedIn state
-    async function getUser() {
+    async function checkUser() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      console.log(user, "fuser");
-
-      // let { data: user } = await supabase
-      //   .from("user")
-      //   .select("*")
-      //   .eq("user_id", cookies.get("user_id"));
-
       if (user) {
-        setUserData(user.user_metadata);
-        cookies.set("user_id", user.id, { path: "/" });
-        return;
+        setLoggedIn(true);
+        setUser(user);
       } else {
         setLoggedIn(false);
+        setUser(null);
       }
     }
 
-    // if (loggedIn) {
-    getUser();
-    // }
+    checkUser();
+    if (totalPosts && totalPosts > 0) return;
+    getTotalPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (loggedIn) {
+      updateUser();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn]);
 
-  // it will stop scrolling when comments are open
-  useEffect(() => {
-    if (showComments.status) {
-      document.body.style.overflow = "hidden";
-      function onBackButtonEvent(e) {
-        e.preventDefault();
-        setShowComments({ status: false, id: 0 });
-        window.history.pushState(null, null, window.location.pathname);
-        window.scrollTo(0, window.scrollY);
-      }
-      window.history.pushState(null, null, window.location.pathname);
-      window.addEventListener("popstate", onBackButtonEvent, false);
-      return () => {
-        window.removeEventListener("popstate", onBackButtonEvent);
-      };
-    } else {
-      document.body.style.overflow = "auto";
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [showComments]);
+  // this function will be used to update user when needed
+  async function updateUser() {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    setUser(user);
+  }
 
-  // console.log(loggedIn, userData);
+  async function getMorePosts() {
+    let { data: newPosts, error } = await supabase
+      .from("posts")
+      .select("*")
+      .range(
+        posts && posts.length >= 0 ? posts.length : 0,
+        posts && posts.length >= 0 ? posts.length + 9 : 9
+      )
+      .order("id", { ascending: false });
+    if (error) {
+      toast.error(error.message);
+    } else {
+      if (posts === []) {
+        setPosts([...newPosts]);
+      } else {
+        setPosts([...posts, ...newPosts]);
+      }
+    }
+  }
+
   useEffect(() => {
-    console.log(loggedIn, userData);
-  }, [loggedIn, userData]);
+    if (scrollPosition === 0 && posts.length === 0) {
+      getMorePosts();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [posts]);
+
+  // this function will be used to add new post
+  async function addPost(post) {
+    const { data, error } = await supabase
+      .from("posts")
+      .insert([post])
+      .select();
+    if (error) {
+      toast.error(error.message);
+    } else {
+      setPosts([data[0], ...posts]);
+      toast.success("Post added");
+    }
+  }
+
+  // this function will be used to delete post only if the user is the owner of the post
+  async function deletePost(id) {
+    const toastId = toast.loading("Deleting post...");
+    const { data, error } = await supabase.from("posts").delete().match({ id });
+    if (error) {
+      toast.update(toastId, {
+        render: error.message,
+        type: toast.TYPE.ERROR,
+        isLoading: false,
+        autoClose: 2000,
+      });
+    } else {
+      setPosts(posts.filter((post) => post.id !== id));
+      toast.update(toastId, {
+        render: "Post deleted",
+        type: toast.TYPE.SUCCESS,
+        isLoading: false,
+        autoClose: 1000,
+      });
+    }
+    return data;
+  }
+
+  // this function will be used to update post only if the user is the owner of the post
+  // async function updatePost(id, updates) {
+  //   const { data, error } = await supabase
+  //     .from("posts")
+  //     .update(updates)
+  //     .match({ id });
+  //   if (error) {
+  //     toast.error(error.message);
+  //   } else {
+  //     setPosts(posts.map((post) => (post.id === id ? data[0] : post)));
+  //     toast.success("Post updated");
+  //   }
+  //   return data;
+  // }
 
   return (
-    <BrowserRouter>
-      <Navbar loggedIn={loggedIn} />
-      <Routes>
-        <Route element={<AnimationLayout />}>
-          <Route
-            path="/"
-            element={
-              <Home
-                userData={userData}
-                loggedIn={loggedIn}
-                supabase={supabase}
-                posts={posts}
-                setPosts={setPosts}
-                setScrollPosition={setHomeScrollPosition}
-                scrollPosition={homeScrollPosition}
-                setShowComments={setShowComments}
-              />
-            }
-          />
-          <Route path="login" element={<Login setLoggedIn={setLoggedIn} />} />
-          <Route
-            path="signup"
-            element={<Register setLoggedIn={setLoggedIn} loggedIn={loggedIn} />}
-          />
-          {userData && (
-            <Route path="profile/*" end>
+    <>
+      <BrowserRouter>
+        <Navbar loggedIn={loggedIn} />
+        <Routes>
+          <Route element={<Animate />}>
+            <Route
+              path="/"
+              element={
+                posts.length > 0 ? (
+                  <Home
+                    user={user}
+                    loggedIn={loggedIn}
+                    updateUser={updateUser}
+                    posts={posts}
+                    totalPosts={totalPosts}
+                    addPost={addPost}
+                    scrollPosition={scrollPosition}
+                    setScrollPosition={setScrollPosition}
+                    getMorePosts={getMorePosts}
+                    deletePost={deletePost}
+                  />
+                ) : (
+                  <Loader />
+                )
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <Login loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <Register setLoggedIn={setLoggedIn} />
+                </Suspense>
+              }
+            />
+
+            <Route path="/profile/*">
               <Route
                 path=":username"
                 element={
                   <Profile
-                    userData={userData}
-                    supabase={supabase}
-                    setUserData={setUserData}
-                    setShowComments={setShowComments}
-                    setScrollPosition={setProfileScrollPosition}
-                    scrollPosition={profileScrollPosition}
+                    updateUser={updateUser}
+                    deletePost={deletePost}
+                    user={user}
                   />
                 }
               />
-              <Route path="edit" element={<EditProfile userData={user} />} />
+              <Route
+                path="edit"
+                element={
+                  <Suspense fallback={<Loader />}>
+                    <EditProfile user={user} updateUser={updateUser} />
+                  </Suspense>
+                }
+              />
             </Route>
-          )}
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/password-reset" element={<PasswordReset />} />
 
-          <Route path="*" element={<Login setLoggedIn={setLoggedIn} />} />
-        </Route>
-      </Routes>
-
-      {showComments.status && (
-        <Post
-          setShowComments={setShowComments}
-          userProfile={userData.profile}
-          postID={showComments.id}
-          userData={userData}
-        />
-      )}
-
-      {/* <Analytics /> */}
-      <ToastContainer position="top-right" />
-    </BrowserRouter>
+            <Route
+              path="*"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <NotFound />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/password-reset"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <PasswordReset />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/forgot-password"
+              element={
+                <Suspense fallback={<Loader />}>
+                  <ForgotPassword />
+                </Suspense>
+              }
+            />
+          </Route>
+        </Routes>
+        <ToastContainer position="top-right" autoClose={1500} />
+      </BrowserRouter>
+    </>
   );
 }
-
-export default App;

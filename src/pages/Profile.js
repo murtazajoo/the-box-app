@@ -1,53 +1,77 @@
 import React, { useEffect, useState } from "react";
-import Tweet from "../components/Tweet";
 import { NavLink, useParams } from "react-router-dom";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import Post from "../components/post/Post";
 
-export default function Profile({
-  supabase,
-  setShowComments,
-  userData,
-  setScrollPosition,
-}) {
+export default function Profile({ updateUser, deletePost }) {
+  const supabase = useSupabaseClient();
   let { username } = useParams();
-
-  const [user, setUser] = useState(null);
   const [admin, setAdmin] = useState(false);
-
+  const [dropsLength, setDropsLength] = useState(0);
   const [posts, setPosts] = useState(null);
   const [showSaved, setShowSaved] = useState(false);
+  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    async function getUser(
-      u = username === "me" ? userData.username : username
-    ) {
-      let { data: users, error } = await supabase
+  async function getUser() {
+    if (username === "me") {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+    } else {
+      const { data: user, error } = await supabase
         .from("user")
         .select("*")
-        .eq("username", u);
-
-      if (error) {
-        console.log(error);
-      } else {
-        setUser(users[0]);
-      }
-    }
-
-    async function getPosts() {
-      let { data: userPosts, error } = await supabase
-        .from("posts")
-        .select("*")
-        .eq("username", username === "me" ? userData.username : username)
-        .order("created_at", { ascending: false });
-      if (userPosts) {
-        setPosts(userPosts);
+        .eq("username", username)
+        .single();
+      if (user) {
+        setUser({
+          id: user.user_id,
+          user_metadata: {
+            username: user.username,
+            name: user.name,
+            profile: user.profile,
+            bio: user.bio,
+            saved: user.saved,
+          },
+        });
       } else {
         console.error(error);
       }
-      console.log(userPosts, "user");
     }
+  }
+
+  useEffect(() => {
+    if (username) {
+      if (username === "me" || user?.user_metadata?.username === username) {
+        setAdmin(true);
+        setShowSaved(false);
+      } else {
+        setAdmin(false);
+        setShowSaved(false);
+      }
+      getUser();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username]);
+  async function getPosts() {
+    setPosts(null);
+    let { data: userPosts, error } = await supabase
+      .from("posts")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+    if (userPosts) {
+      setPosts(userPosts);
+      setDropsLength(userPosts.length);
+    } else {
+      console.error(error);
+    }
+  }
+  useEffect(() => {
     async function getSaved() {
-      await getUser();
-      let saved = user.saved;
+      // getUser();
+      let saved = user.user_metadata.saved;
       let { data: savedPosts, error } = await supabase
         .from("posts")
         .select("*")
@@ -59,29 +83,28 @@ export default function Profile({
       } else {
         console.error(error);
       }
-      console.log(savedPosts, "saved");
     }
-
-    const f = async () => {
+    if (user) {
       setPosts(null);
-      if (!user) await getUser();
-      showSaved ? await getSaved() : await getPosts();
-    };
-    if (username && userData) {
-      if (username === "me" || username === userData.username) {
-        setAdmin(true);
+      if (showSaved) {
+        getSaved();
       } else {
-        setAdmin(false);
-        setShowSaved(false);
+        getPosts();
       }
-      f();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showSaved, username]);
+  }, [user, showSaved]);
+
+  useEffect(() => {
+    if (showSaved) {
+      getUser();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showSaved]);
 
   return (
     <>
-      {user && userData && (
+      {user && (
         <div className="container text mt-5 mx-auto mx-1 w-100">
           <div className="row">
             <div className="col-12 col-md-6 col-lg-6">
@@ -97,17 +120,17 @@ export default function Profile({
                   className="rounded-pill border border-2 border-primary"
                   width="60"
                   height="60"
-                  src={user.profile}
+                  src={user.user_metadata.profile}
                   alt="profile"
                 />
                 <div className="mx-3">
-                  <h4 className="m-0">{user.name}</h4>
-                  <small>@{user.username}</small>
+                  <h4 className="m-0">{user.user_metadata.name}</h4>
+                  <small>@{user.user_metadata.username}</small>
                 </div>
               </div>
-              <p className="bio text-muted my-4">
+              <p className="bio text-muted my-4 w-100 text-break">
                 <small>bio</small> <br />
-                {user.bio}
+                {user.user_metadata.bio}
               </p>
             </div>
             <div className="col-12 col-md-6 col-lg-6">
@@ -119,16 +142,16 @@ export default function Profile({
                     }}
                     className={`btn text rounded-0 ${!showSaved && "bg-text"}`}
                   >
-                    Drops ({posts && posts.length})
+                    Drops ({dropsLength})
                   </button>
-                  {admin && (
+                  {admin && user && (
                     <button
                       onClick={() => {
                         setShowSaved(true);
                       }}
                       className={`btn text rounded-0 ${showSaved && "bg-text"}`}
                     >
-                      Saved ({user.saved.length})
+                      Saved ({user.user_metadata.saved.length})
                     </button>
                   )}
                 </div>
@@ -138,14 +161,14 @@ export default function Profile({
                     posts && posts.length > 0 ? (
                       posts.map((post) => {
                         return (
-                          <Tweet
-                            supabase={supabase}
-                            post={post}
-                            user={user}
-                            loggedIn={true}
-                            setScrollPosition={setScrollPosition}
+                          <Post
                             key={post.id}
-                            setShowComments={setShowComments}
+                            user={user}
+                            post={post}
+                            loggedIn={true}
+                            updateUser={updateUser}
+                            deletePost={deletePost}
+                            getPosts={getPosts}
                           />
                         );
                       })

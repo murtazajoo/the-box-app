@@ -2,14 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { IoSend } from "react-icons/io5";
-import { createClient } from "@supabase/supabase-js";
-import { click } from "@testing-library/user-event/dist/click";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
 export default function ForgotPassword() {
-  const supabase = createClient(
-    "https://xmeyiduceoxfvciwoajn.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZXlpZHVjZW94ZnZjaXdvYWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODA1MzkzMDcsImV4cCI6MTk5NjExNTMwN30.euNOxeyYsUh6cegLmddHuVjFwU2l28IWZzPzyJ4lTRU"
-  );
+  const supabase = useSupabaseClient();
 
   const [email, setEmail] = useState(null);
   const [status, setStatus] = useState(false);
@@ -31,31 +27,30 @@ export default function ForgotPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setClicked(true);
-    try {
-      toast.info("sending password reset link", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
+    const toastId = toast.loading("Please wait...");
+    const { error } = await supabase.auth.signInWithOtp({
+      email: email,
+      options: {
+        emailRedirectTo: "https://the-box-app.vercel.app/password-reset",
+      },
+    });
 
-      const { error } = await supabase.auth.signInWithOtp({
-        email: email,
-        options: {
-          emailRedirectTo: "https://the-box-app.vercel.app/password-reset",
-        },
-      });
-
-      if (error) {
-        throw error;
-      } else {
-        toast.success("Reset link successfully sent ", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-        setStatus(true);
-      }
-    } catch (error) {
+    if (error) {
       console.log(error, email);
-      toast.error("something went wrong", {
-        position: toast.POSITION.TOP_RIGHT,
+      toast.update(toastId, {
+        render: "SomeThing Went Wrong",
+        type: "error",
+        isLoading: false,
+        autoClose: 2000,
       });
+    } else {
+      toast.update(toastId, {
+        render: "Link sent. Please check your mail",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000,
+      });
+      setStatus(true);
     }
   };
   useEffect(() => {

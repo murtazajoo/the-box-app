@@ -21,25 +21,25 @@
   border-radius: var(--radius);
   background-color: var(--primary);
   /* border: 1px solid var(--text-primary) !important; */
-  position: sticky !important;
 }
 @media (max-width: 1000px) {
   .home-card-mobile {
     display: none !important;
   }
 }
+
 .profile-card-banner {
   width: 100%;
   max-height: 200px;
 }
 
 .profile-card-picture {
-  width: 100px !important;
-  height: 100px;
+  width: 7vw !important;
+  /* height: 100px; */
   border-radius: 50%;
   overflow: hidden;
   margin: 0 auto;
-  margin-top: -50px;
+  margin-top: -5vw;
   border: 5px solid var(--primary);
   background-color: #fff;
 }

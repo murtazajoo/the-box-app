@@ -1,56 +1,63 @@
-import React, { useState } from "react";
-import "../css/login.css";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  BsArrowLeftShort,
-  BsFillArrowRightCircleFill,
-  BsFillBookmarkPlusFill,
-  BsFillExclamationTriangleFill,
-} from "react-icons/bs";
-import { createClient } from "@supabase/supabase-js";
-import "bootstrap";
-import Cookies from "universal-cookie";
+import { BsArrowLeftShort, BsFillArrowRightCircleFill } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
-export default function Login({ setLoggedIn }) {
-  const supabase = createClient(
-    "https://xmeyiduceoxfvciwoajn.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtZXlpZHVjZW94ZnZjaXdvYWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODA1MzkzMDcsImV4cCI6MTk5NjExNTMwN30.euNOxeyYsUh6cegLmddHuVjFwU2l28IWZzPzyJ4lTRU"
-  );
-  const [alert, setAlert] = useState(false);
+export default function Login({ setLoggedIn, loggedIn }) {
+  const supabase = useSupabaseClient();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleInputChange = (event) => {
     setFormData({
       ...formData,
       [event.target.name]: event.target.value,
     });
   };
-  const navigate = useNavigate();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const toastId = toast.loading("logging you in...");
+    setIsSubmitting(true);
     let { data, error } = await supabase.auth.signInWithPassword({
       email: formData.email,
       password: formData.password,
     });
+    setIsSubmitting(false);
     if (error) {
-      setAlert(true);
-      setTimeout(() => {
-        setAlert(false);
-      }, 3000);
-    } else {
-      setAlert(false);
-      const cookies = new Cookies();
-      cookies.set("user_id", data.user.id, { path: "/" });
-      cookies.set("access_token", data.session.access_token, { path: "/" });
-      setLoggedIn(true);
-      toast.success("Login Successful", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 700,
+      toast.update(toastId, {
+        render: error.message,
+        type: "error",
+        isLoading: false,
+        autoClose: 2000,
       });
+      if (error.message === "Invalid password") {
+        setFormData({ ...formData, password: "" });
+      }
+
+      setLoggedIn(false);
+    } else if (data) {
+      setLoggedIn(true);
+      toast.update(toastId, {
+        render: "Logged in successfully",
+        type: "success",
+        isLoading: false,
+        autoClose: 1000,
+      });
+
       navigate("../");
     }
   };
+  useEffect(() => {
+    if (loggedIn) {
+      navigate("../");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="login-form ">
       <form className="m-auto position-relative  p-5" onSubmit={handleSubmit}>
@@ -58,21 +65,10 @@ export default function Login({ setLoggedIn }) {
           <BsArrowLeftShort /> Go Back
         </Link>
 
-        <p className="text-center h1 mb-4">Login</p>
-        <p className="text-center d-flex justify-content-center align-items-center">
-          <BsFillBookmarkPlusFill class="text-info" size={30} />
-          <h4 className="logo">MORA</h4>{" "}
-        </p>
-        {alert && (
-          <div
-            class="alert text-danger center-flex  text-center w-100 p-0 m-0 mb-2 bg-none "
-            role="alert"
-          >
-            <BsFillExclamationTriangleFill /> Invalid Login Credentials
-          </div>
-        )}
-        <div class="mb-3">
-          <label htmlFor="exampleInputEmail1" class="form-label">
+        <p className="text-center h4 mb-4">Login</p>
+
+        <div className="mb-3">
+          <label htmlFor="exampleInputEmail1" className="form-label">
             Email address
           </label>
           <input
@@ -80,18 +76,14 @@ export default function Login({ setLoggedIn }) {
             name="email"
             value={formData.email}
             onChange={handleInputChange}
-            class="form-control py-2 h2"
+            className="form-control py-2 h2"
             id="exampleInputEmail1"
             placeholder="example@mail.com"
-            aria-describedby="emailHelp"
             required
           />
-          <div id="emailHelp" class="form-text">
-            {/* We'll never share your email with anyone else. */}
-          </div>
         </div>
-        <div class="mb-3">
-          <label htmlFor="exampleInputPassword1" class="form-label">
+        <div className="mb-3">
+          <label htmlFor="exampleInputPassword1" className="form-label">
             Password
           </label>
           <input
@@ -99,14 +91,19 @@ export default function Login({ setLoggedIn }) {
             value={formData.password}
             onChange={handleInputChange}
             type="password"
-            class="form-control py-2 h2"
+            className="form-control py-2 h2"
             id="exampleInputPassword1"
+            autoComplete="current-password"
             placeholder="**********"
             required
           />
         </div>
 
-        <button type="submit" class="btn btn-primary ">
+        <button
+          disabled={isSubmitting}
+          type="submit"
+          className="btn btn-primary "
+        >
           Login <BsFillArrowRightCircleFill />
         </button>
         <small className="text-muted d-block  py-3 m-auto text-center w-100">
@@ -120,17 +117,22 @@ export default function Login({ setLoggedIn }) {
         <div className="border-bottom border-secondary my-3 w-25 m-auto"></div>
         <p className="text-muted  py-3 m-auto w-100 text-center">
           don't have an account?{" "}
-          <Link to="../signup" className="text-primary text-decoration-none">
-            Signup
+          <Link to="../register" className="text-primary text-decoration-none">
+            Register
           </Link>
         </p>
       </form>
       <div className="img w-50">
-        <img
+        {/* <img
           src="https://source.unsplash.com/random/1920x1080/?wallpaper,landscape,sky"
           alt=""
           className="img-fluid"
-        />
+        /> */}
+        <div className="text-center d-flex justify-content-center align-items-center">
+          <h4 className="logo h1" style={{ fontSize: "15vw" }}>
+            MORA
+          </h4>{" "}
+        </div>
       </div>
     </div>
   );
