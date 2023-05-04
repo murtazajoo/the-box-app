@@ -264,14 +264,16 @@ export default function Post({
                   {formatTimeStamp(created_at)}
                 </small>
               </div>
-              <div>
-                <button
-                  onClick={() => setShowOptions(true)}
-                  className="btn btn-sm  px-3 py-1"
-                >
-                  <BsThreeDots className="text" />
-                </button>
-              </div>
+              {loggedIn && (
+                <div>
+                  <button
+                    onClick={() => setShowOptions(true)}
+                    className="btn btn-sm  px-3 py-1"
+                  >
+                    <BsThreeDots className="text" />
+                  </button>
+                </div>
+              )}
 
               {/* make a small menu */}
             </div>
