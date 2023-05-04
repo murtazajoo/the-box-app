@@ -208,30 +208,32 @@ export default function Post({
                     </div> */}
                   </>
                 ) : (
-                  <div className="tweet-user-menu-item my-3 ">
-                    <NavLink
-                      to={`/profile/${username}`}
-                      className="text-decoration-none d-block btn border-0   text"
-                    >
-                      <div className="d-flex align-items-center">
-                        <BsPersonFill className="me-2" />
-                        <span>Profile</span>
+                  <>
+                    <div className="tweet-user-menu-item my-3 ">
+                      <NavLink
+                        to={`/profile/${username}`}
+                        className="text-decoration-none d-block btn border-0   text"
+                      >
+                        <div className="d-flex align-items-center">
+                          <BsPersonFill className="me-2" />
+                          <span>Profile</span>
+                        </div>
+                      </NavLink>
+                    </div>
+                    <div className="tweet-user-menu-item my-3 ">
+                      <div
+                        className="d-flex align-items-center btn border-0"
+                        onClick={() => {
+                          toast.success("Reported Successfully");
+                          setShowOptions(false);
+                        }}
+                      >
+                        <MdOutlineReportGmailerrorred className="me-2" />
+                        <span>Report</span>
                       </div>
-                    </NavLink>
-                  </div>
+                    </div>
+                  </>
                 )}
-                <div className="tweet-user-menu-item my-3 ">
-                  <div
-                    className="d-flex align-items-center btn border-0"
-                    onClick={() => {
-                      toast.success("Reported Successfully");
-                      setShowOptions(false);
-                    }}
-                  >
-                    <MdOutlineReportGmailerrorred className="me-2" />
-                    <span>Report</span>
-                  </div>
-                </div>
               </div>
             </div>
           )}
