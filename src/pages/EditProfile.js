@@ -92,6 +92,7 @@ export default function EditProfile({ updateUser, user }) {
       // reader.onload = function (e) {
       //   setprofile(e.target.result);
       // };
+      // console.log("need to edit this file") 
       // reader.readAsDataURL(file);
     }
   }
